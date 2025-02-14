@@ -1,3 +1,136 @@
+Employee Payroll Data Processing
+This repository contains a Python script designed to extract, process, and save employee payroll data from Excel files. The script performs several tasks, including:
+
+Extracting employee information from an Excel file.
+
+Extracting payroll taxes.
+
+Extracting taxes paid.
+
+Combining the extracted data into a single dataset.
+
+Saving the combined data into a CSV file.
+
+Table of Contents
+Requirements
+
+Usage
+
+Functions
+
+extract_employee_info
+
+payroll_taxes
+
+extract_taxes_paid
+
+combine_list
+
+combine_data_lists
+
+write_to_file_in_directory
+
+Requirements
+Python 3.x
+
+openpyxl library
+
+locale library
+
+Install the required libraries using pip:
+
+sh
+pip install openpyxl
+Usage
+Clone the repository.
+
+Place your Excel file in the data directory.
+
+Update the file path and name in the script (v_path and v_file variables).
+
+Run the script:
+
+sh
+python payroll_processing.py
+Functions
+extract_employee_info
+This function extracts employee information from the specified Excel file.
+
+Parameters:
+
+dirpath (str): Directory path of the Excel file.
+
+filename (str): Name of the Excel file.
+
+heading (str): The heading to identify the section of the Excel file containing employee information.
+
+Returns:
+
+heading_list (list): List of employee information headings.
+
+filtered_employee_data (list): List of filtered employee data.
+
+payroll_taxes
+This function extracts payroll taxes from the specified Excel file.
+
+Parameters:
+
+dirpath (str): Directory path of the Excel file.
+
+filename (str): Name of the Excel file.
+
+heading (str): The heading to identify the section of the Excel file containing payroll taxes.
+
+Returns:
+
+__tax_headings (list): List of payroll tax headings.
+
+__all_taxes (list): List of all extracted taxes.
+
+extract_taxes_paid
+This function extracts taxes paid from the specified Excel file.
+
+Parameters:
+
+dirpath (str): Directory path of the Excel file.
+
+filename (str): Name of the Excel file.
+
+heading (str): The heading to identify the section of the Excel file containing taxes paid.
+
+Returns:
+
+__taxes (list): List of extracted taxes paid.
+
+combine_list
+This function combines multiple lists into a single list.
+
+Parameters:
+
+x (list): The base list.
+
+y (list): The list to be appended to the base list.
+
+z (str): An additional element to be added to the list.
+
+Returns:
+
+x (list): Combined list.
+
+combine_data_lists
+This function combines multiple lists of data into a single list.
+
+Parameters:
+
+x (list): The base list of data.
+
+y (list): The list of data to be appended to the base list.
+
+z (list): An additional list of data to be added.
+
+**Returns
+
+
 Reconciliation Script
 This Python script compares all files in a specified directory with corresponding numbers in their filenames (e.g., "plexus<number>.csv" and "lumber<number>.csv") and performs a data comparison. The script lists the files, filters the ones that start with "plexus" and "lumber," extracts the numbers from the filenames, and identifies differences between the pairs.
 
