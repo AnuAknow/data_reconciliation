@@ -1,25 +1,42 @@
-from decimal import Decimal, getcontext
-from tabulate import tabulate
+from decimal import getcontext
 import pandas as pd 
 import numpy as np
 import locale
 import openpyxl
-# import csv
 import re
+import os
 
 
 # Set the desired precision (e.g., for typical currency with 2 decimal places)
 getcontext().prec = 2
 
 locale.setlocale(locale.LC_ALL, 'en_US.UTF-8')
-# l_headings = list()
-# l_taxes = list()
-# l_taxes_paid = list()
-# l_emp_info = list()
-# d_employee_info = dict()
-
 
 def extract_employee_info(file_path, heading, start_row, stop_row):
+    """
+    This python function extracts data by:
+    
+    1. locating a heading and returning the column index 
+    2. it extracts the values from 10 rows from a 10 row merged cell object 
+       beneath the located heading 
+    3. After extracting 10 rows it advances 1 row and continues to extracting 
+       values from the next 10 row merged cell object until it reach the end_row 
+    
+    This script defines an extract_data function that takes the following parameters:
+
+    Args:
+        file_path: The path to your Excel file.
+        heading: The heading to identify the column to extract data from.
+        start_row: The row where the table heading is located.
+        num_rows: The number of rows to extract below each heading.
+        skip_rows: The number of rows to skip after extracting.
+        end_row: The row to stop extraction.
+
+    This function extracts the specified number of rows below each heading, skips the given
+    number of rows, and continues this pattern until it reaches the end row. You can adjust 
+    the parameters to fit your specific needs.
+    
+    """
     
     # Load the workbook and select the active worksheet
     workbook = openpyxl.load_workbook(file_path)
@@ -76,6 +93,15 @@ def extract_employee_info(file_path, heading, start_row, stop_row):
 
 def payroll_taxes(filepath, heading, start_row, stop_row):
     """
+    
+    This python function extracts data by: 
+    
+    1. locating a heading and returning the column index 
+    2. extracting the values from 6 rows beneath the heading 
+       located in the found column 
+    3. After extracting 6 rows it advances 4 rows and continues extracting 6 rows 
+       until it reach the given end_row to stop 
+    
     Extracts data from an Excel file based on a heading and row range.
 
     Args:
@@ -143,7 +169,22 @@ def payroll_taxes(filepath, heading, start_row, stop_row):
             
             
 def extract_taxes_paid(filepath, heading):
+    """
+    Python script using the openpyxl library to accomplish the task of extracting data 
+    from 10 merged rows beneath a heading, advancing 1 row, and continuing the extraction 
+    until reaching a specified row to stop:
     
+    In this script, the extract_data function includes the following parameters:
+    
+        file_path: The path to your Excel file.
+        heading: The heading to identify the column to extract data from.
+        start_row: The row where the table heading is located.
+        stop_row: The row to stop extraction.
+        
+    The script first finds the column based on the given heading. Then, it extracts the values 
+    from 10 merged rows beneath the heading, advances 1 row, and continues this pattern until it 
+    reaches the given stop row.
+    """
     # Array for taxes paid
     __taxes = list()
     
@@ -194,24 +235,49 @@ def combine_data_lists(x, y, z):
 
 def write_file(dirpath, filename, headings, emp_data):
     
+    # Define the target directory path
+    new_directory = dirpath
+    
+    # Create an output file with the name of the original
     filename = re.sub("xlsx", "csv", filename)
-    filepath = dirpath + filename
     
-    # Display all rows
-    pd.set_option('display.max_rows', None)
+    # Get the current working directory
+    current_directory = os.getcwd()
+    print(f"Current directory: {current_directory}")
+    
+    # Change the current working directory
+    try:
+        os.chdir(new_directory)
+        print(f"Directory changed to: {os.getcwd()}")
+        
+        # Set Pandas dataframe display options
+        # Display all rows
+        pd.set_option('display.max_rows', None)
 
-    # Display all columns
-    pd.set_option('display.max_columns', None)
+        # Display all columns
+        pd.set_option('display.max_columns', None)
 
-    # If you also want to adjust the column width
-    pd.set_option('display.max_colwidth', None)
+        # If you also want to adjust the column width
+        pd.set_option('display.max_colwidth', None)
     
-    # Create the pandas DataFrame 
-    df = pd.DataFrame(emp_data, columns = headings) 
-    df = df.replace({None: np.nan})  # Replacing None with NaN for missing values
+        # Create the pandas DataFrame 
+        df = pd.DataFrame(emp_data, columns = headings) 
+        df = df.replace({None: np.nan})  # Replacing None with NaN for missing values
     
-    # print dataframe. 
-    df.to_csv(filepath, index=False)
+        # print dataframe. 
+        df.to_csv(filename, index=False)
+    
+    except FileNotFoundError:
+        print(f"Error: Directory not found: {new_directory}")
+    except NotADirectoryError:
+        print(f"Error: Not a directory: {new_directory}")
+    except PermissionError:
+        print(f"Error: Permission denied to access: {new_directory}")
+    except Exception as e:
+        print(f"An unexpected error occurred: {e}")
+    
+    
+
 
 if __name__ == '__main__':
     v_path = 'data\\'
@@ -224,30 +290,30 @@ if __name__ == '__main__':
     # Extract Employee Headings and Info
     l_emp_info_heading, l_emp_info = extract_employee_info(filepath, heading='Employees', start_row=7, stop_row=697)
     print(len(l_emp_info))
-    print(l_emp_info) 
-    print(l_emp_info_heading)  
+    # print(l_emp_info) 
+    # print(l_emp_info_heading)  
    
    # Extract Payroll Headings and Taxes
     l_payroll_taxes_headings, l_payroll_taxes = payroll_taxes(filepath, heading='Employee-paid Taxes', start_row=7, stop_row=697)
-    print(len(l_payroll_taxes))
-    print(l_payroll_taxes)
-    print(l_payroll_taxes_headings)
+    # print(len(l_payroll_taxes))
+    # print(l_payroll_taxes)
+    # print(l_payroll_taxes_headings)
     
     # Extract Taxes Paid
     l_taxes_paid = extract_taxes_paid(filepath, heading='Amount')
-    print(len(l_taxes_paid))
-    print(l_taxes_paid)
     v_taxes_paid_heading= 'Taxes Paid'
-    print(v_taxes_paid_heading)
+    # print(len(l_taxes_paid))
+    # print(l_taxes_paid)
+    # print(v_taxes_paid_heading)
   
 
     # Combined Employee info and Tax headings
-    # l_combined_headings = combine_list(l_emp_info_heading, l_payroll_taxes_headings, v_taxes_paid_heading)
-    # print(l_combined_headings)
+    l_combined_headings = combine_list(l_emp_info_heading, l_payroll_taxes_headings, v_taxes_paid_heading)
+    print(l_combined_headings)
 
     # Combine Employee info and Payroll and Total taxes paid 
-    # l_combined_emp_tax = combine_data_lists(l_emp_info, l_payroll_taxes, l_taxes_paid)
-    # print(l_combined_emp_tax[1])
+    l_combined_emp_tax = combine_data_lists(l_emp_info, l_payroll_taxes, l_taxes_paid)
+    print(l_combined_emp_tax)
     
     # Write *.csv file to directory
     # write_file(v_path, v_file, l_combined_headings, l_combined_emp_tax)
