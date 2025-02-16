@@ -7,8 +7,7 @@ import re
 getcontext().prec = 2
 locale.setlocale(locale.LC_ALL, 'en_US.UTF-8')
 
-def extract_employee_info(dirpath, filename, heading):
-    filepath = dirpath + filename
+def extract_employee_info(filepath, heading):
     col_b_index = openpyxl.utils.column_index_from_string('B')
     wb = openpyxl.load_workbook(filepath)
     sheet = wb.active
@@ -124,13 +123,16 @@ def write_to_file_in_directory(dirpath, filename, headings, emp_data):
 if __name__ == '__main__':
     v_path = 'data\\'
     v_file = 'Zenefits_payroll_detail_Ck Date 121523.xlsx'
+    filepath = v_path+v_file
 
-    l_emp_info_heading, l_emp_info = extract_employee_info(v_path, v_file, heading='Employees')
-    l_payroll_taxes_headings, l_payroll_taxes = payroll_taxes(v_path, v_file, heading='Amount')
-    l_taxes_paid = extract_taxes_paid(v_path, v_file, heading='Amount')
-    v_taxes_paid_heading = 'Taxes Paid'
+    l_emp_info_heading, l_emp_info = extract_employee_info(filepath, heading='Employees')
+    print(l_emp_info_heading)
+    print(l_emp_info)
+    # l_payroll_taxes_headings, l_payroll_taxes = payroll_taxes(v_path, v_file, heading='Amount')
+    # l_taxes_paid = extract_taxes_paid(v_path, v_file, heading='Amount')
+    # v_taxes_paid_heading = 'Taxes Paid'
 
-    l_combined_headings = combine_list(l_emp_info_heading, l_payroll_taxes_headings, v_taxes_paid_heading)
-    l_combined_emp_tax = combine_data_lists(l_emp_info, l_payroll_taxes, l_taxes_paid)
+    # l_combined_headings = combine_list(l_emp_info_heading, l_payroll_taxes_headings, v_taxes_paid_heading)
+    # l_combined_emp_tax = combine_data_lists(l_emp_info, l_payroll_taxes, l_taxes_paid)
 
-    write_to_file_in_directory(v_path, v_file, l_combined_headings, l_combined_emp_tax)
+    # write_to_file_in_directory(v_path, v_file, l_combined_headings, l_combined_emp_tax)
