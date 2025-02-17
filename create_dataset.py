@@ -304,6 +304,10 @@ def write_file(dirpath, filename, headings, emp_data):
         df = pd.DataFrame(emp_data, columns = headings) 
         df = df.replace({None: np.nan})  # Replacing None with NaN for missing values
     
+        # Drop multiple columns 'A' and 'C'
+        drop_columns = ['SSN', 'Hire Date', 'Check Date', 'Department', 'Work Location', 'Home address', 'FED Additional medicare', 'Taxes Paid']
+        df.drop(drop_columns, axis=1, inplace=True)
+    
         # print dataframe. 
         df.to_csv(filename, index=False)
     
@@ -325,7 +329,7 @@ if __name__ == '__main__':
         print(e)
     
     try:
-        user_input_filename = get_filename_input("Please enter the file path: ")
+        user_input_filename = get_filename_input("Please enter the file name: ")
         print(f"You entered: {user_input_filename}")
     except ValueError as e:
         print(e)

@@ -1,6 +1,48 @@
+import numpy as np
 import pandas as pd
 import openpyxl
 import os
+import re
+
+"""
+This Python script accepts user input and checks if it's a non-empty string. 
+If the input is not a valid string or is empty, it will ask for input up to 3 
+times before raising an error
+
+This script defines a get_filepath_input and a get_filename_input function that:
+Prompts the user for input. Checks if the input is a non-empty string.
+If the input is invalid, it asks for input again up to 3 more times.
+If the input is still invalid after 3 more attempts, it raises a ValueError.
+"""
+def get_filepath_input(prompt):
+    attempts = 0
+    max_attempts = 3
+    
+    while attempts <= max_attempts:
+        user_input = input(prompt)
+        
+        if isinstance(user_input, str) and user_input.strip():
+            return user_input
+        else:
+            attempts += 1
+            print(f"Invalid input. Please enter a non-empty string. Attempts remaining: {max_attempts - attempts + 1}")
+            
+    raise ValueError("Maximum attempts exceeded. Valid input not provided.")
+
+def get_filename_input(prompt):
+    attempts = 0
+    max_attempts = 3
+    
+    while attempts <= max_attempts:
+        user_input = input(prompt)
+        
+        if isinstance(user_input, str) and user_input.strip():
+            return user_input
+        else:
+            attempts += 1
+            print(f"Invalid input. Please enter a non-empty string. Attempts remaining: {max_attempts - attempts + 1}")
+            
+    raise ValueError("Maximum attempts exceeded. Valid input not provided.")
 
 """
 The script reads the specified ranges from the Excel file, 
@@ -19,40 +61,93 @@ In this script:
 """
 
 def read_excel_ranges(file_path, first_range, second_range, sort_column, output_path):
+    
+    # Combine file_path (name) with output_path (directory)
+    file_name = output_path + file_path
     # Load the workbook and select the active worksheet
-    workbook = openpyxl.load_workbook(file_path)
+    workbook = openpyxl.load_workbook(file_name)
     sheet = workbook.active
 
     # Helper function to read a range of rows and columns into a DataFrame
     def read_range(start_row, start_col, end_row, end_col):
         data = []
         for row in range(start_row, end_row + 1):
-            data.append([sheet.cell(row=row, column=col).value for col in range(start_col, end_col + 1)])
+            data.append([str(sheet.cell(row=row, column=col).value) for col in range(start_col, end_col+1)])
         return pd.DataFrame(data)
+    
+    # Create an output file with the name of the original
+    filename = re.sub("xlsx", "csv", file_path)
+    
+    # Get the current working directory
+    current_directory = os.getcwd()
+    print(f"Current directory: {current_directory}")
+    
+    # Change the current working directory
+    try:
+        os.chdir(output_path)
+        print(f"Directory changed to: {os.getcwd()}")
+        
+        # Set Pandas dataframe display options
+        # Display all rows
+        pd.set_option('display.max_rows', None)
 
-    # Read the first range
-    first_df = read_range(*first_range)
+        # Display all columns
+        pd.set_option('display.max_columns', None)
 
-    # Read the second range
-    second_df = read_range(*second_range)
+        # If you also want to adjust the column width
+        pd.set_option('display.max_colwidth', None)
+    
+        # Create the pandas DataFrame 
+        # Read the first range
+        first_df = read_range(*first_range)
 
-    # Combine the two DataFrames
-    combined_df = pd.concat([first_df, second_df], ignore_index=True)
+        # Read the second range
+        second_df = read_range(*second_range)
 
-    # Sort the combined DataFrame by the specified column
-    combined_df.sort_values(by=sort_column, inplace=True)
+        # Combine the two DataFrames
+        combined_df = pd.concat([first_df, second_df], ignore_index=True)
+        
+        # Sort the combined DataFrame by the specified column
+        combined_df.sort_values(by=sort_column, inplace=True)
 
-    # Change the directory to the specified output path
-    os.chdir(output_path)
+        # Replacing None with NaN for missing values
+        df = combined_df.replace({None: np.nan})  
+        
+        # Replace all column names using a list
+        df.columns = ['Last Name', 'First Name', 'W.E. Date', 'Hrs', 'Sub Total', 'Gross', 'Adjusted Wage', 'Fed. tax', 'State. tax', 'City Tax', 'Social Sec', 'Medicare', 'SDI', 'Misc Net', 'Net Pay']
+        
+        # Drop multiple columns 'A' and 'C'
+        drop_columns = ['Hrs', 'Sub Total', 'Gross', 'Adjusted Wage', 'City Tax', 'Misc Net']
+        df.drop(drop_columns, axis=1, inplace=True)
 
-    # Write the DataFrame to a CSV file
-    combined_df.to_csv('output.csv', index=False)
+        # print dataframe. 
+        df.to_csv(filename, index=False)
+    
+    except FileNotFoundError:
+        print(f"Error: Directory not found: {output_path}")
+    except NotADirectoryError:
+        print(f"Error: Not a directory: {output_path}")
+    except PermissionError:
+        print(f"Error: Permission denied to access: {output_path}")
+    except Exception as e:
+        print(f"An unexpected error occurred: {e}")
+    
 
-# Example usage
-file_path = 'your_file.xlsx'
-first_range = (2, 1, 6, 4)  # (start_row, start_col, end_row, end_col)
-second_range = (8, 1, 12, 4)  # (start_row, start_col, end_row, end_col)
-sort_column = 0  # Index of the column to sort by (0-based index)
-output_path = '/path/to/output/directory'
+if __name__ == '__main__':
+    try:
+        output_path = get_filepath_input("Please enter the file path: ")
+        print(f"You entered: {output_path}")
+    except ValueError as e:
+        print(e)
+    
+    try:
+        file_path = get_filename_input("Please enter the file name: ")
+        print(f"You entered: {file_path}")
+    except ValueError as e:
+        print(e)
+    # Example usage
+    first_range = (7, 2, 44, 16)  # (start_row, start_col, end_row, end_col)
+    second_range = (53, 2, 82, 16)  # (start_row, start_col, end_row, end_col)
+    sort_column = 2  # Index of the column to sort by (0-based index)
 
-read_excel_ranges(file_path, first_range, 
+    read_excel_ranges(file_path, first_range, second_range, sort_column, output_path)
