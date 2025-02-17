@@ -12,6 +12,46 @@ getcontext().prec = 2
 
 locale.setlocale(locale.LC_ALL, 'en_US.UTF-8')
 
+"""
+This Python script accepts user input and checks if it's a non-empty string. 
+If the input is not a valid string or is empty, it will ask for input up to 3 
+times before raising an error
+
+This script defines a get_filepath_input and a get_filename_input function that:
+Prompts the user for input. Checks if the input is a non-empty string.
+If the input is invalid, it asks for input again up to 3 more times.
+If the input is still invalid after 3 more attempts, it raises a ValueError.
+"""
+def get_filepath_input(prompt):
+    attempts = 0
+    max_attempts = 3
+    
+    while attempts <= max_attempts:
+        user_input = input(prompt)
+        
+        if isinstance(user_input, str) and user_input.strip():
+            return user_input
+        else:
+            attempts += 1
+            print(f"Invalid input. Please enter a non-empty string. Attempts remaining: {max_attempts - attempts + 1}")
+            
+    raise ValueError("Maximum attempts exceeded. Valid input not provided.")
+
+def get_filename_input(prompt):
+    attempts = 0
+    max_attempts = 3
+    
+    while attempts <= max_attempts:
+        user_input = input(prompt)
+        
+        if isinstance(user_input, str) and user_input.strip():
+            return user_input
+        else:
+            attempts += 1
+            print(f"Invalid input. Please enter a non-empty string. Attempts remaining: {max_attempts - attempts + 1}")
+            
+    raise ValueError("Maximum attempts exceeded. Valid input not provided.")
+
 def extract_employee_info(file_path, heading, start_row, stop_row):
     """
     This python function extracts data by:
@@ -275,17 +315,22 @@ def write_file(dirpath, filename, headings, emp_data):
         print(f"Error: Permission denied to access: {new_directory}")
     except Exception as e:
         print(f"An unexpected error occurred: {e}")
-    
-    
-
 
 if __name__ == '__main__':
-    v_path = 'data\\'
-    v_file = 'Zenefits_payroll_detail_Ck Date 121523.xlsx'
-    filepath = v_path+v_file  # Replace with your file path
-    heading_text = "Employee-paid Taxes"  # Replace with the actual heading text
-    start_row = 7 # Where to start looking for the header
-    stop_row = 697 # The last row to process
+    
+    try:
+        user_input_filepath = get_filepath_input("Please enter the file path: ")
+        print(f"You entered: {user_input_filepath}")
+    except ValueError as e:
+        print(e)
+    
+    try:
+        user_input_filename = get_filename_input("Please enter the file path: ")
+        print(f"You entered: {user_input_filename}")
+    except ValueError as e:
+        print(e)
+
+    filepath = user_input_filepath + '\\' + user_input_filename  # Replace with your file path
 
     # Extract Employee Headings and Info
     l_emp_info_heading, l_emp_info = extract_employee_info(filepath, heading='Employees', start_row=7, stop_row=697)
@@ -316,6 +361,6 @@ if __name__ == '__main__':
     print(l_combined_emp_tax)
     
     # Write *.csv file to directory
-    # write_file(v_path, v_file, l_combined_headings, l_combined_emp_tax)
+    write_file(user_input_filepath, user_input_filename, l_combined_headings, l_combined_emp_tax)
     
-    # print(f"CSV file {v_file} has been processed and written to {v_path}!")
+    print(f"CSV file {user_input_filename} has been processed and written to {user_input_filepath}!")
