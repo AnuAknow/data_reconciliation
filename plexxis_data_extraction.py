@@ -63,7 +63,7 @@ In this script:
 def read_excel_ranges(file_path, first_range, second_range, sort_column, output_path):
     
     # Combine file_path (name) with output_path (directory)
-    file_name = output_path + file_path
+    file_name = output_path + '\\' + file_path
     # Load the workbook and select the active worksheet
     workbook = openpyxl.load_workbook(file_name)
     sheet = workbook.active
@@ -105,10 +105,7 @@ def read_excel_ranges(file_path, first_range, second_range, sort_column, output_
         second_df = read_range(*second_range)
 
         # Combine the two DataFrames
-        combined_df = pd.concat([first_df, second_df], ignore_index=True)
-        
-        # Sort the combined DataFrame by the specified column
-        combined_df.sort_values(by=sort_column, inplace=True)
+        combined_df = pd.concat([first_df, second_df], ignore_index=True)    
 
         # Replacing None with NaN for missing values
         df = combined_df.replace({None: np.nan})  
@@ -118,7 +115,14 @@ def read_excel_ranges(file_path, first_range, second_range, sort_column, output_
         
         # Drop multiple columns 'A' and 'C'
         drop_columns = ['Hrs', 'Sub Total', 'Gross', 'Adjusted Wage', 'City Tax', 'Misc Net']
-        df.drop(drop_columns, axis=1, inplace=True)
+        df.drop(drop_columns, axis=1, inplace=True)d
+
+        # Sort the combined DataFrame by the specified column
+        sort_column = 'Last Name' 
+        if sort_column in df.columns:
+            df.sort_values(by=sort_column, inplace=True)
+        else:
+            print(f"Error: Column '{sort_column}' not found in the DataFrame.")
 
         # print dataframe. 
         df.to_csv(filename, index=False)
@@ -151,3 +155,5 @@ if __name__ == '__main__':
     sort_column = 2  # Index of the column to sort by (0-based index)
 
     read_excel_ranges(file_path, first_range, second_range, sort_column, output_path)
+    
+    print(f"CSV file {file_path} has been processed and written to {output_path}!")
