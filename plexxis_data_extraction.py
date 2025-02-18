@@ -115,7 +115,7 @@ def read_excel_ranges(file_path, first_range, second_range, sort_column, output_
         
         # Drop multiple columns 'A' and 'C'
         drop_columns = ['Hrs', 'Sub Total', 'Gross', 'Adjusted Wage', 'City Tax', 'Misc Net']
-        df.drop(drop_columns, axis=1, inplace=True)d
+        df.drop(drop_columns, axis=1, inplace=True)
 
         # Sort the combined DataFrame by the specified column
         sort_column = 'Last Name' 

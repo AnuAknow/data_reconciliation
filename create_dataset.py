@@ -338,7 +338,7 @@ if __name__ == '__main__':
 
     # Extract Employee Headings and Info
     l_emp_info_heading, l_emp_info = extract_employee_info(filepath, heading='Employees', start_row=7, stop_row=697)
-    print(len(l_emp_info))
+    # print(len(l_emp_info))
     # print(l_emp_info) 
     # print(l_emp_info_heading)  
    
@@ -358,11 +358,11 @@ if __name__ == '__main__':
 
     # Combined Employee info and Tax headings
     l_combined_headings = combine_list(l_emp_info_heading, l_payroll_taxes_headings, v_taxes_paid_heading)
-    print(l_combined_headings)
+    # print(l_combined_headings)
 
     # Combine Employee info and Payroll and Total taxes paid 
     l_combined_emp_tax = combine_data_lists(l_emp_info, l_payroll_taxes, l_taxes_paid)
-    print(l_combined_emp_tax)
+    # print(l_combined_emp_tax)
     
     # Write *.csv file to directory
     write_file(user_input_filepath, user_input_filename, l_combined_headings, l_combined_emp_tax)
