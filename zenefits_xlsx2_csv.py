@@ -316,17 +316,10 @@ def write_file(dirpath, filename, headings, emp_data):
         column_to_move = df.pop("FED Medicare")
         df.insert(6, "FED Medicare", column_to_move)
         column_to_move = df.pop("FED Fica")
-        df.insert(5, "FED Fica", column_to_move)
-        
-        # Pattern to match and replacement string
-        pattern = r'^\d{4}-\d{2}-\d{2}\s-\s'
-        df['Period'] = df['Period'].apply(lambda row: re.sub(pattern, "", row))
+        df.insert(5, "FED Fica", column_to_move) 
        
-        # make positive
-        col_to_filter = [FED Federal income tax,CA California state tax,FED Fica,FED Medicare,CA California sdi]
-        col_pattern = pattern = r'\$'
-        for col in col_to_filter:
-            df[col] = df[col].apply(lambda row: re.sub(col_pattern, "", row))
+        # Update date format to exclude time
+        df['Period'] = pd.to_datetime(df['Period']).dt.date
        
         # print dataframe. 
         df.to_csv(filename, index=False)

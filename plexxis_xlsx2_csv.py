@@ -1,8 +1,14 @@
 import numpy as np
 import pandas as pd
+import locale
 import openpyxl
 import os
 import re
+
+
+# Set the low level number formatting
+locale.setlocale(locale.LC_ALL, 'en_US.UTF-8')
+
 
 """
 This Python script accepts user input and checks if it's a non-empty string. 
@@ -68,6 +74,11 @@ def read_excel_ranges(file_path, first_range, second_range, sort_column, output_
     workbook = openpyxl.load_workbook(file_name)
     sheet = workbook.active
 
+    
+    # Helper function to format as currency
+    def format_currency(amount):
+        return '${:,.2f}'.format(amount)
+    
     # Helper function to read a range of rows and columns into a DataFrame
     def read_range(start_row, start_col, end_row, end_col):
         data = []
@@ -124,13 +135,16 @@ def read_excel_ranges(file_path, first_range, second_range, sort_column, output_
         else:
             print(f"Error: Column '{sort_column}' not found in the DataFrame.")
         
+        # Update date format to exclude time
+        df['W.E. Date'] = pd.to_datetime(df['W.E. Date']).dt.date
         
-        # Removing unnecessary data from column cells
-        # Pattern to match and replacement string
-        pattern = r'\s\d{2}:\d{2}:\d{2}$'
-        df['W.E. Date'] = df['W.E. Date'].apply(lambda row: re.sub(pattern, "", row))
-        
-            
+        # make positive and format as dollar and cents
+        col_to_filter = ['Fed. tax','State. tax','Social Sec','Medicare','SDI','Net Pay']
+        for col in col_to_filter:
+            df[col] = df[col].replace(r'-', '', regex=True)
+            df[col] = df[col].astype(float)
+            df[col] = df[col].apply(lambda x: '${:,.2f}'.format(x))
+
         # print dataframe. 
         df.to_csv(filename, index=False)
     
