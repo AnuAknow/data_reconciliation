@@ -131,7 +131,6 @@ def read_excel_ranges(file_path, first_range, second_range, sort_column, output_
         pattern = r'\s\d{2}:\d{2}:\d{2}$'
         df['W.E. Date'] = df['W.E. Date'].apply(lambda row: re.sub(pattern, "", row))
         
-        
             
         # print dataframe. 
         df.to_csv(filename, index=False)
