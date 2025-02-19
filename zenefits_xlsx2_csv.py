@@ -321,6 +321,8 @@ def write_file(dirpath, filename, headings, emp_data):
         # Update date format to exclude time
         df['Period'] = pd.to_datetime(df['Period']).dt.date
        
+        # Update filename replace spaces with underscores
+        filename = filename.replace(r'\s+', '_')
         # print dataframe. 
         df.to_csv(filename, index=False)
     

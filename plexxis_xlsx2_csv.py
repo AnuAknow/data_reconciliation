@@ -144,7 +144,9 @@ def read_excel_ranges(file_path, first_range, second_range, sort_column, output_
             df[col] = df[col].replace(r'-', '', regex=True)
             df[col] = df[col].astype(float)
             df[col] = df[col].apply(lambda x: '${:,.2f}'.format(x))
-
+        
+        # Update filename replace spaces with underscores
+        filename = filename.replace(r'\s+', '_')
         # print dataframe. 
         df.to_csv(filename, index=False)
     
