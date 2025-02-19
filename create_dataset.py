@@ -308,6 +308,21 @@ def write_file(dirpath, filename, headings, emp_data):
         drop_columns = ['SSN', 'Hire Date', 'Check Date', 'Department', 'Work Location', 'Home address', 'FED Additional medicare', 'Taxes Paid']
         df.drop(drop_columns, axis=1, inplace=True)
     
+        # Move Columns and data to match Plexxis to Zenefits
+        column_to_move = df.pop("NetPay")
+        df.insert(8, "NetPay", column_to_move)
+        column_to_move = df.pop("CA California sdi")
+        df.insert(7, "CA California sdi", column_to_move)
+        column_to_move = df.pop("FED Medicare")
+        df.insert(6, "FED Medicare", column_to_move)
+        column_to_move = df.pop("FED Fica")
+        df.insert(5, "FED Fica", column_to_move)
+        
+        # Removing unnecessary data from column cells
+        # Pattern to match and replacement string
+        pattern = r'^\d{4}-\d{2}-\d{2}\s-\s'
+        df['Period'] = df['Period'].apply(lambda row: re.sub(pattern, "", row))
+       
         # print dataframe. 
         df.to_csv(filename, index=False)
     

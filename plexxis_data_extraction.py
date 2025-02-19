@@ -72,6 +72,7 @@ def read_excel_ranges(file_path, first_range, second_range, sort_column, output_
     def read_range(start_row, start_col, end_row, end_col):
         data = []
         for row in range(start_row, end_row + 1):
+            f"${v_tax:,.2f}"
             data.append([str(sheet.cell(row=row, column=col).value) for col in range(start_col, end_col+1)])
         return pd.DataFrame(data)
     
@@ -123,7 +124,15 @@ def read_excel_ranges(file_path, first_range, second_range, sort_column, output_
             df.sort_values(by=sort_column, inplace=True)
         else:
             print(f"Error: Column '{sort_column}' not found in the DataFrame.")
-
+        
+        
+        # Removing unnecessary data from column cells
+        # Pattern to match and replacement string
+        pattern = r'\s\d{2}:\d{2}:\d{2}$'
+        df['W.E. Date'] = df['W.E. Date'].apply(lambda row: re.sub(pattern, "", row))
+        
+        
+            
         # print dataframe. 
         df.to_csv(filename, index=False)
     
