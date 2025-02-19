@@ -318,7 +318,6 @@ def write_file(dirpath, filename, headings, emp_data):
         column_to_move = df.pop("FED Fica")
         df.insert(5, "FED Fica", column_to_move)
         
-        # Removing unnecessary data from column cells
         # Pattern to match and replacement string
         pattern = r'^\d{4}-\d{2}-\d{2}\s-\s'
         df['Period'] = df['Period'].apply(lambda row: re.sub(pattern, "", row))
