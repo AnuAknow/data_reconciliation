@@ -35,14 +35,3 @@ def compare_csv(file1_path, file2_path, output_file_path="differences.xlsx"):
         # Convert lists to strings before appending
         diff = (diff[0], str(diff[1]), str(diff[2]))
         sheet.append(diff)
-
-    # Save the workbook
-    workbook.save(output_file_path)
-
-if __name__ == "__main__":
-    # Example usage:
-    data_path = "data\\"
-    file1_path = data_path + "Plexxis_Tax Details_Ck Date 121523.csv"
-    file2_path = data_path + "Zenefits_payroll_detail_Ck Date 121523.csv"
-    
-    compare_csv(file1_path, file2_path)
