@@ -146,9 +146,9 @@ def read_excel_ranges(file_path, first_range, second_range, sort_column, output_
             df[col] = df[col].apply(lambda x: '${:,.2f}'.format(x))
         
         # Update filename replace spaces with underscores
-        filename = filename.replace(r'\s+', '_')
+        filtered_filename = filename.replace(r'\s+', '_')
         # print dataframe. 
-        df.to_csv(filename, index=False)
+        df.to_csv(filtered_filename, index=False)
     
     except FileNotFoundError:
         print(f"Error: Directory not found: {output_path}")
