@@ -79,13 +79,13 @@ def create_diff_report(dir_path, csv_file1, csv_file2, output_file):
                     print(__matching_list[0][2])
                     print(__matching_list[0][3])
                 
-                    f.write(__matching_list[0][0])
-                    f.write(__matching_list[0][1])
-                    f.write(__matching_list[0][2])
-                    f.write(__matching_list[0][3])
-                    if len(__unmatching_list[0][3]) > 1:
-                        for list in __unmatching_list[0][3]:
-                            f.write(list)
+                    # f.write(__matching_list[0][0])
+                    # f.write(__matching_list[0][1])
+                    # f.write(__matching_list[0][2])
+                    # f.write(__matching_list[0][3])
+                    # if len(__unmatching_list[0][3]) > 1:
+                    #     for list in __unmatching_list[0][3]:
+                    #         f.write(list)
                     
                             
                 elif len(__unmatching_list) > 0:
@@ -94,13 +94,13 @@ def create_diff_report(dir_path, csv_file1, csv_file2, output_file):
                     print(__unmatching_list[0][2])
                     print(__unmatching_list[0][3])
                 
-                    f.write(__unmatching_list[0][0])
-                    f.write(__unmatching_list[0][1])
-                    f.write(__unmatching_list[0][2])
-                    f.write(__unmatching_list[0][3]) 
-                    if len(__unmatching_list[0][3]) > 1:
-                        for list in __unmatching_list[0][3]:
-                            f.write(list)
+                    # f.write(__unmatching_list[0][0])
+                    # f.write(__unmatching_list[0][1])
+                    # f.write(__unmatching_list[0][2])
+                    # f.write(__unmatching_list[0][3]) 
+                    # if len(__unmatching_list[0][3]) > 1:
+                    #     for list in __unmatching_list[0][3]:
+                    #         f.write(list)
                         
                         
                     
