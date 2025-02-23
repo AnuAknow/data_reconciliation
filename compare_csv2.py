@@ -23,33 +23,41 @@ def create_diff_report(dir_path, csv_file1, csv_file2, output_file):
         with open(csv_filepath, 'r') as file:
             csv_reader = csv.reader(file)
             for csv_row in csv_reader:
-                diff = []
+                diff = ['diffs']
+                row_contents = []
                 if row == csv_row:
-                    print(f"matching:{row}, {csv_row}")
+                    # print(f"matching:{row}, {csv_row}")
+                    row_contents.append("matching") 
+                    row_contents.append(row)
+                    row_contents.append(csv_row)
                     diff1 = [x for x in row if x not in csv_row]
                     if len(diff1) != 0:
-                        print(f"Diff1 {diff1}")
+                        # print(f"Diff1 {diff1}")
                         diff.append(diff1)
                     diff2 = [x for x in csv_row if x not in row]
                     if len(diff2) != 0:
-                        print(f"Diff2 {diff2}")
+                        # print(f"Diff2 {diff2}")
                         diff.append(diff2)
-                    if len(diff) != 0:
-                        print(diff)       
-                if row[0] == csv_row[0] and row[1] == csv_row[1] and row != csv_row:
-                    print(f"unmatched:{row}, {csv_row}")
+                    if len(diff) != 0: 
+                        row_contents.append(diff)
+                        matching_rows.append(row_contents) 
+                 
+                elif row[0] == csv_row[0] and row[1] == csv_row[1] and row != csv_row:
+                    # print(f"unmatched:{row}, {csv_row}")
+                    row_contents.append("unmatching") 
+                    row_contents.append(row)
+                    row_contents.append(csv_row)
                     diff1 = [x for x in row if x not in csv_row]
                     if len(diff1) != 0:
-                        diff.append(diff1)
-                        
+                        diff.append(diff1) 
                     diff2 = [x for x in csv_row if x not in row]
                     if len(diff2) != 0:
                         diff.append(diff2)
-                    if len(diff) != 0:
-                        print(diff)
-            print("\n")
-        #             matching_rows.append(csv_row)
-        # return matching_rows
+                    if len(diff) != 0: 
+                        row_contents.append(diff)
+                        unmatching_rows.append(row_contents) 
+                    
+        return matching_rows, unmatching_rows
     
     # Get the current working directory
     current_directory = os.getcwd()
@@ -60,15 +68,20 @@ def create_diff_report(dir_path, csv_file1, csv_file2, output_file):
         os.chdir(dir_path)
         print(f"Directory changed to: {os.getcwd()}")
 
-        with open(csv_file2, 'r') as file:
+        with open(csv_file2, 'r') as file, open('plexxis_zenefits_table.html', 'w') as f:
             csv_reader = csv.reader(file)
             for csv_row in csv_reader:
-                print(f"test: {csv_row}")
-                compare_row_to_csv(csv_row, csv_file1)
+                matching_list, unmatching_list = compare_row_to_csv(csv_row, csv_file1)
+                if len(matching_list) > 0:
+                    print(matching_list)
+                    f.write(f"{matching_list}\n")
+                elif len(unmatching_list) > 0:
+                    print(unmatching_list)
+                    f.write(f"{unmatching_list}\n")
+                else:
+                    print(f"test: {csv_row}")
+                    f.write(f"{csv_row}\n")
                 time.sleep(5)
-                # matched_row = compare_row_to_csv(csv_row, csv_file1)
-                # print(matched_row)
-        
             
             # html_table_blue_light = build_table(df_diff_report_out, 'grey_light')
             # html_table = df_diff_report_out.to_html()
@@ -97,7 +110,7 @@ if __name__ == '__main__':
     dir_path = 'data'
     csv_file1 = 'sorted_Plexxis_Tax_Details_Ck_Date_121523.csv'
     csv_file2 = 'Zenefits_payroll_detail_Ck_Date_121523.csv'
-    output_file = 'Zenefits_Plexxis_Tax_merge.csv'
+    output_file = 'Zenefits_Plexxis_Tax_merge.txt'
     create_diff_report(dir_path, csv_file1, csv_file2, output_file)
     
     print(f"CSV file {dir_path} has been processed and written to {output_file}!")
