@@ -1,6 +1,5 @@
 
-# from pretty_html_table import build_table
-# import pandas as pd
+from tabulate import tabulate
 import time
 import csv
 import os
@@ -18,46 +17,46 @@ def create_diff_report(dir_path, csv_file1, csv_file2, output_file):
         Returns:
             list: List of rows from the CSV that match the input row.
         """
-        matching_rows = []
-        unmatching_rows = []
+        __matching_rows = []
+        __unmatching_rows = []
         with open(csv_filepath, 'r') as file:
             csv_reader = csv.reader(file)
             for csv_row in csv_reader:
-                diff = ['diffs']
-                row_contents = []
+                __diff = ['diffs']
+                __row_contents = []
                 if row == csv_row:
                     # print(f"matching:{row}, {csv_row}")
-                    row_contents.append("matching") 
-                    row_contents.append(row)
-                    row_contents.append(csv_row)
+                    __row_contents.append("matching") 
+                    __row_contents.append(row)
+                    __row_contents.append(csv_row)
                     diff1 = [x for x in row if x not in csv_row]
-                    if len(diff1) != 0:
+                    if len(diff1) > 0:
                         # print(f"Diff1 {diff1}")
-                        diff.append(diff1)
+                        __diff.append(diff1)
                     diff2 = [x for x in csv_row if x not in row]
-                    if len(diff2) != 0:
+                    if len(diff2) > 0:
                         # print(f"Diff2 {diff2}")
-                        diff.append(diff2)
-                    if len(diff) != 0: 
-                        row_contents.append(diff)
-                        matching_rows.append(row_contents) 
+                        __diff.append(diff2)
+                    if len(__diff) > 0: 
+                        __row_contents.append(__diff)
+                        __matching_rows.append(__row_contents) 
                  
                 elif row[0] == csv_row[0] and row[1] == csv_row[1] and row != csv_row:
                     # print(f"unmatched:{row}, {csv_row}")
-                    row_contents.append("unmatching") 
-                    row_contents.append(row)
-                    row_contents.append(csv_row)
+                    __row_contents.append("unmatching") 
+                    __row_contents.append(row)
+                    __row_contents.append(csv_row)
                     diff1 = [x for x in row if x not in csv_row]
-                    if len(diff1) != 0:
-                        diff.append(diff1) 
+                    if len(diff1) > 1:
+                        __diff.append(diff1) 
                     diff2 = [x for x in csv_row if x not in row]
-                    if len(diff2) != 0:
-                        diff.append(diff2)
-                    if len(diff) != 0: 
-                        row_contents.append(diff)
-                        unmatching_rows.append(row_contents) 
+                    if len(diff2) > 1:
+                        __diff.append(diff2)
+                    if len(__diff) > 1: 
+                        __row_contents.append(__diff)
+                        __unmatching_rows.append(__row_contents) 
                     
-        return matching_rows, unmatching_rows
+        return __matching_rows, __unmatching_rows
     
     # Get the current working directory
     current_directory = os.getcwd()
@@ -68,48 +67,48 @@ def create_diff_report(dir_path, csv_file1, csv_file2, output_file):
         os.chdir(dir_path)
         print(f"Directory changed to: {os.getcwd()}")
 
-        with open(csv_file2, 'r') as file, open('plexxis_zenefits_table.txt', 'w') as f:
-            csv_reader = csv.reader(file)
-            row_count = 0
-            for csv_row in csv_reader:
-                matching_list, unmatching_list = compare_row_to_csv(csv_row, csv_file1)
-                if len(matching_list) > 0:
-                    print(matching_list[0][0])
-                    print(matching_list[0][1])
-                    print(matching_list[0][2])
-                    print(matching_list[0][3])
+        with open(csv_file2, 'r') as file, open('plexxis_zenefits_table.html', 'w') as f:
+            __csv_reader = csv.reader(file)
+            __row_count = 0
+            __report = []
+            __match_collection = ["Match"]
+            __nomatch_collection = ["No Match"]
+            __unmatch_collection = ["Unmatch"]
+            for __csv_row in __csv_reader:
+                __matching_list, __unmatching_list = compare_row_to_csv(__csv_row, csv_file1)
+                if len(__matching_list) > 0:
+                    print(__matching_list[0][0])
+                    print(__matching_list[0][1])
+                    print(__matching_list[0][2])
+                    print(__matching_list[0][3])
     
-                    f.write(f"{matching_list[0][0]}\n")
-                    f.write(f"{matching_list[0][1]}\n")
-                    f.write(f"{matching_list[0][2]}\n")
-                    f.write(f"{matching_list[0][3]}\n\n")
+                    __match_collection.append(__matching_list[0][1])
+                    __match_collection.append(__matching_list[0][2])
+                    __match_collection.append(__matching_list[0][3])
                     
-                elif len(unmatching_list) > 0:
-                    print(unmatching_list[0][0])
-                    print(unmatching_list[0][1])
-                    print(unmatching_list[0][2])
-                    print(unmatching_list[0][3])
+                elif len(__unmatching_list) > 0:
+                    print(__unmatching_list[0][0])
+                    print(__unmatching_list[0][1])
+                    print(__unmatching_list[0][2])
+                    print(__unmatching_list[0][3])
                     
-                    f.write(f"{unmatching_list[0][0]}\n")
-                    f.write(f"{unmatching_list[0][1]}\n")
-                    f.write(f"{unmatching_list[0][2]}\n")
-                    f.write(f"{unmatching_list[0][3]}\n\n")
+                    __unmatch_collection.append(__unmatching_list[0][1])
+                    __unmatch_collection.append(__unmatching_list[0][2])
+                    __unmatch_collection.append(__unmatching_list[0][3])
                 else:
-                    print(f"No match: {csv_row}")
-                    f.write(f"{csv_row}\n\n")
-                row_count += 1
-                time.sleep(5)
-            print(row_count)
+                    print(f"No match: {__csv_row}")
+                    __nomatch_collection.append(__csv_row)
+                __row_count += 1
+                #time.sleep(5) #only for debugging
             
-            # html_table_blue_light = build_table(df_diff_report_out, 'grey_light')
-            # html_table = df_diff_report_out.to_html()
-            
-            # Save to html file
-            # with open('plexxis_zenefits_table.html', 'w') as f:
-            #     f.write(html_table_blue_light)
-        
-            
-            # diff_df.to_csv(outfile, index=False)
+            # Build and organize collections for writing
+            __report.append(__match_collection)   
+            __report.append(__unmatch_collection)
+            __report.append(__nomatch_collection)
+            __report.append(f"Row Count: {__row_count}")
+           
+           # Write out html
+            f.write(tabulate(__report, tablefmt='html'))
     
     except FileNotFoundError:
         print(f"Error: Directory not found: {dir_path}")
