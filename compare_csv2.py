@@ -79,18 +79,24 @@ def create_diff_report(dir_path, csv_file1, csv_file2, output_file):
                     print(matching_list[0][2])
                     print(matching_list[0][3])
     
-                    f.write(f"{matching_list}\n")
+                    f.write(f"{matching_list[0][0]}\n")
+                    f.write(f"{matching_list[0][1]}\n")
+                    f.write(f"{matching_list[0][2]}\n")
+                    f.write(f"{matching_list[0][3]}\n\n")
+                    
                 elif len(unmatching_list) > 0:
                     print(unmatching_list[0][0])
                     print(unmatching_list[0][1])
                     print(unmatching_list[0][2])
                     print(unmatching_list[0][3])
                     
-                    f.write(f"{unmatching_list}\n")
+                    f.write(f"{unmatching_list[0][0]}\n")
+                    f.write(f"{unmatching_list[0][1]}\n")
+                    f.write(f"{unmatching_list[0][2]}\n")
+                    f.write(f"{unmatching_list[0][3]}\n\n")
                 else:
                     print(f"No match: {csv_row}")
-                    f.write(f"{csv_row}\n")
-                print("\n")
+                    f.write(f"{csv_row}\n\n")
                 row_count += 1
                 time.sleep(5)
             print(row_count)
