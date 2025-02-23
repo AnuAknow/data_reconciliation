@@ -77,6 +77,7 @@ def create_diff_report(dir_path, csv_file1, csv_file2, output_file):
             for __csv_row in __csv_reader:
                 __matching_list, __unmatching_list = compare_row_to_csv(__csv_row, csv_file1)
                 if len(__matching_list) > 0:
+                    
                     print(__matching_list[0][0])
                     print(__matching_list[0][1])
                     print(__matching_list[0][2])
@@ -108,7 +109,7 @@ def create_diff_report(dir_path, csv_file1, csv_file2, output_file):
             __report.append(f"Row Count: {__row_count}")
            
            # Write out html
-            f.write(tabulate(__report, tablefmt='html'))
+            f.write(tabulate(__report, tablefmt="pipe"))
     
     except FileNotFoundError:
         print(f"Error: Directory not found: {dir_path}")
