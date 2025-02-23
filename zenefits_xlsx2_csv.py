@@ -3,6 +3,7 @@ import pandas as pd
 import numpy as np
 import locale
 import openpyxl
+import sys
 import re
 import os
 
@@ -125,6 +126,12 @@ def extract_employee_info(file_path, heading, start_row, stop_row):
 
         # Advance 1 row before extracting the next set of 10 rows
         if len(extracted_data) > 0:
+            # Remove beginning of payperiod date
+            extracted_data[5] = re.sub(r"\d\d\d\d-\d\d-\d\d\s-\s","", extracted_data[5])
+            
+            # Update "Net Pay" to currency format
+            v_type = float(extracted_data[(len(extracted_data)-1)].replace('$', ""))
+            extracted_data[(len(extracted_data)-1)] = '${:,.2f}'.format(v_type)
             employee_data.append(extracted_data)
         row += 1
 
@@ -322,19 +329,23 @@ def write_file(dirpath, filename, headings, emp_data):
         df['Period'] = pd.to_datetime(df['Period']).dt.date
        
         # Update filename replace spaces with underscores
-        filtered_filename = filename.replace(r'\s+', '_')
+        filtered_filename = filename.replace(" ", "_")
         # print dataframe. 
         df.to_csv(filtered_filename, index=False)
     
     except FileNotFoundError:
         print(f"Error: Directory not found: {new_directory}")
+        sys.exit(1)
     except NotADirectoryError:
         print(f"Error: Not a directory: {new_directory}")
+        sys.exit(1)
     except PermissionError:
         print(f"Error: Permission denied to access: {new_directory}")
+        sys.exit(1)
     except Exception as e:
         print(f"An unexpected error occurred: {e}")
-
+        sys.exit(1)
+    return filtered_filename
 if __name__ == '__main__':
     
     try:
@@ -353,11 +364,9 @@ if __name__ == '__main__':
 
     # Extract Employee Headings and Info
     l_emp_info_heading, l_emp_info = extract_employee_info(filepath, heading='Employees', start_row=7, stop_row=697)
-    # print(len(l_emp_info))
-    # print(l_emp_info) 
     # print(l_emp_info_heading)  
    
-   # Extract Payroll Headings and Taxes
+    # Extract Payroll Headings and Taxes
     l_payroll_taxes_headings, l_payroll_taxes = payroll_taxes(filepath, heading='Employee-paid Taxes', start_row=7, stop_row=697)
     # print(len(l_payroll_taxes))
     # print(l_payroll_taxes)
@@ -380,6 +389,6 @@ if __name__ == '__main__':
     # print(l_combined_emp_tax)
     
     # Write *.csv file to directory
-    write_file(user_input_filepath, user_input_filename, l_combined_headings, l_combined_emp_tax)
+    output_file = write_file(user_input_filepath, user_input_filename, l_combined_headings, l_combined_emp_tax)
     
-    print(f"CSV file {user_input_filename} has been processed and written to {user_input_filepath}!")
+    print(f"CSV file {output_file} has been processed and written to {user_input_filepath}!")

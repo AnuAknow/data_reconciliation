@@ -2,6 +2,8 @@ import numpy as np
 import pandas as pd
 import locale
 import openpyxl
+import csv
+import sys
 import os
 import re
 
@@ -159,7 +161,54 @@ def read_excel_ranges(file, first_range, second_range, sort_column, dir_path):
         print(f"An unexpected error occurred: {e}")
     return output_file
 
+def sort_csv(dir_path, input_csv_file, output_csv_file, sort_column_index, reverse=False):
+    """
+    Sorts rows in a CSV file based on a specified column.
+
+    Args:
+        input_file (str): Path to the input CSV file.
+        output_file (str): Path to the output CSV file.
+        sort_column_index (int): Index of the column to sort by (0-based).
+        reverse (bool, optional): Sort in descending order if True. Defaults to False.
+    """
+    # Get the current working directory
+    current_directory = os.getcwd()
+    print(f"Current directory: {current_directory}")
+    
+    # Change the current working directory
+    try:
+        if dir_path not in current_directory:
+            os.chdir(dir_path)
+            print(f"Directory changed to: {os.getcwd()}")
+        
+        with open(input_csv_file, 'r') as infile, open(output_csv_file, 'w', newline='') as outfile:
+            reader = csv.reader(infile)
+            header = next(reader)
+            rows = list(reader)
+
+            # Sort rows based on the specified column
+            rows.sort(key=lambda row: row[sort_column_index], reverse=reverse)
+
+            writer = csv.writer(outfile)
+            writer.writerow(header)
+            writer.writerows(rows)
+            
+    except FileNotFoundError:
+        print(f"Error: Directory not found: {dir_path}")
+        sys.exit(1)
+    except NotADirectoryError:
+        print(f"Error: Not a directory: {dir_path}")
+        sys.exit(1)
+    except PermissionError:
+        print(f"Error: Permission denied to access: {dir_path}")
+        sys.exit(1)
+    except Exception as e:
+        print(f"An unexpected error occurred: {e}")
+        sys.exit(1)
+    return output_csv_file
+
 if __name__ == '__main__':
+    
     try:
         dir_path = get_filepath_input("Please enter the file path: ")
         print(f"You entered: {dir_path}")
@@ -171,11 +220,24 @@ if __name__ == '__main__':
         print(f"You entered: {file}")
     except ValueError as e:
         print(e)
-    # Example usage
+        
+    # Args to convert Plexxis xlsx to csv 
     first_range = (7, 2, 44, 16)  # (start_row, start_col, end_row, end_col)
     second_range = (53, 2, 82, 16)  # (start_row, start_col, end_row, end_col)
-    sort_column = 2  # Index of the column to sort by (0-based index)
-
-    written_file = read_excel_ranges(file, first_range, second_range, sort_column, dir_path)
+    sort_column_index = 2  # Sort by the third column (index 2)
     
+    try:
+        written_file = read_excel_ranges(file, first_range, second_range, sort_column_index, dir_path)
+    except ValueError as e:
+        print(e)
     print(f"CSV file {written_file} has been processed and written to {dir_path}!")
+    
+    # Args to sort Plexxis csv rows 
+    input_csv_file = written_file
+    output_csv_file = 'sorted_' + written_file
+    
+    try:
+        sorted_file = sort_csv(dir_path, input_csv_file, output_csv_file, sort_column_index)
+    except ValueError as e:
+        print(e)
+    print(f"CSV file {sorted_file} has been processed and written to {dir_path}!")
