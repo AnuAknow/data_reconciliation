@@ -68,20 +68,32 @@ def create_diff_report(dir_path, csv_file1, csv_file2, output_file):
         os.chdir(dir_path)
         print(f"Directory changed to: {os.getcwd()}")
 
-        with open(csv_file2, 'r') as file, open('plexxis_zenefits_table.html', 'w') as f:
+        with open(csv_file2, 'r') as file, open('plexxis_zenefits_table.txt', 'w') as f:
             csv_reader = csv.reader(file)
+            row_count = 0
             for csv_row in csv_reader:
                 matching_list, unmatching_list = compare_row_to_csv(csv_row, csv_file1)
                 if len(matching_list) > 0:
-                    print(matching_list)
+                    print(matching_list[0][0])
+                    print(matching_list[0][1])
+                    print(matching_list[0][2])
+                    print(matching_list[0][3])
+    
                     f.write(f"{matching_list}\n")
                 elif len(unmatching_list) > 0:
-                    print(unmatching_list)
+                    print(unmatching_list[0][0])
+                    print(unmatching_list[0][1])
+                    print(unmatching_list[0][2])
+                    print(unmatching_list[0][3])
+                    
                     f.write(f"{unmatching_list}\n")
                 else:
-                    print(f"test: {csv_row}")
+                    print(f"No match: {csv_row}")
                     f.write(f"{csv_row}\n")
+                print("\n")
+                row_count += 1
                 time.sleep(5)
+            print(row_count)
             
             # html_table_blue_light = build_table(df_diff_report_out, 'grey_light')
             # html_table = df_diff_report_out.to_html()
