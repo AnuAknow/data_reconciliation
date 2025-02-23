@@ -84,10 +84,10 @@ def create_diff_report(dir_path, csv_file1, csv_file2, output_file):
                     print(__matching_list[0][3])
                 
                     # f.write('<tr><td>')
-                    # f.write(' '.join(__matching_list[0][0]))
-                    # f.write(' '.join(__matching_list[0][1]))
-                    # f.write(' '.join(__matching_list[0][2]))
-                    # f.write(' '.join(__matching_list[0][3]))
+                    f.write(__matching_list[0][0])
+                    f.write(__matching_list[0][1])
+                    f.write(__matching_list[0][2])
+                    f.write(__matching_list[0][3])
                     # f.write('</td></tr>')
                     
                             
@@ -98,15 +98,14 @@ def create_diff_report(dir_path, csv_file1, csv_file2, output_file):
                     print(__unmatching_list[0][3])
                     
                     # f.write('<tr><td>')
-                    # f.write(' '.join(__unmatching_list[0][0]))
-                    # f.write(' '.join(__unmatching_list[0][1]))
-                    # f.write(' '.join(__unmatching_list[0][2]))
-                    # f.write(' '.join(__unmatching_list[0][3]))
+                    f.write(__unmatching_list[0][0])
+                    f.write(__unmatching_list[0][1])
+                    f.write(__unmatching_list[0][2])
+                    f.write(__unmatching_list[0][3])
                     # f.write('</td></tr>')   
                     
                 else:
                     print(f"No match: {__csv_row}")
-                    f.write(f"<tr><td>{' '.join(__csv_row)}</td></tr>")
                 __row_count += 1
                 #time.sleep(5) #only for debugging
            # Write out html
