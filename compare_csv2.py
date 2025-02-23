@@ -47,12 +47,12 @@ def create_diff_report(dir_path, csv_file1, csv_file2, output_file):
                     __row_contents.append(row)
                     __row_contents.append(csv_row)
                     diff1 = [x for x in row if x not in csv_row]
-                    if len(diff1) > 1:
+                    if len(diff1) > 0:
                         __diff.append(diff1) 
                     diff2 = [x for x in csv_row if x not in row]
-                    if len(diff2) > 1:
+                    if len(diff2) > 0:
                         __diff.append(diff2)
-                    if len(__diff) > 1: 
+                    if len(__diff) > 0: 
                         __row_contents.append(__diff)
                         __unmatching_rows.append(__row_contents) 
                     
@@ -70,46 +70,42 @@ def create_diff_report(dir_path, csv_file1, csv_file2, output_file):
         with open(csv_file2, 'r') as file, open('plexxis_zenefits_table.html', 'w') as f:
             __csv_reader = csv.reader(file)
             __row_count = 0
-            __report = []
-            __match_collection = ["Match"]
-            __nomatch_collection = ["No Match"]
-            __unmatch_collection = ["Unmatch"]
+            f.write('<table>')
+            f.write('<tbody>')
             for __csv_row in __csv_reader:
                 __matching_list, __unmatching_list = compare_row_to_csv(__csv_row, csv_file1)
                 if len(__matching_list) > 0:
-                    
                     print(__matching_list[0][0])
                     print(__matching_list[0][1])
                     print(__matching_list[0][2])
                     print(__matching_list[0][3])
-    
-                    __match_collection.append(__matching_list[0][1])
-                    __match_collection.append(__matching_list[0][2])
-                    __match_collection.append(__matching_list[0][3])
+                
+                    f.write(f"<tr><td>{__matching_list[0][0]}</td></tr>")
+                    f.write(f"<tr><td>{__matching_list[0][1]}</td></tr>")
+                    f.write(f"<tr><td>{__matching_list[0][2]}</td></tr>")
+                    f.write(f"<tr><td>{__matching_list[0][3]}</td></tr>")
                     
+                            
                 elif len(__unmatching_list) > 0:
                     print(__unmatching_list[0][0])
                     print(__unmatching_list[0][1])
                     print(__unmatching_list[0][2])
                     print(__unmatching_list[0][3])
                     
-                    __unmatch_collection.append(__unmatching_list[0][1])
-                    __unmatch_collection.append(__unmatching_list[0][2])
-                    __unmatch_collection.append(__unmatching_list[0][3])
+                    f.write(f"<tr><td>{__unmatching_list[0][0]}</td></tr>")
+                    f.write(f"<tr><td>{__unmatching_list[0][1]}</td></tr>")
+                    f.write(f"<tr><td>{__unmatching_list[0][2]}</td></tr>")
+                    f.write(f"<tr><td>{__unmatching_list[0][3]}</td></tr>")
+                    
+                    
                 else:
                     print(f"No match: {__csv_row}")
-                    __nomatch_collection.append(__csv_row)
+                    f.write(__csv_row)
                 __row_count += 1
                 #time.sleep(5) #only for debugging
-            
-            # Build and organize collections for writing
-            __report.append(__match_collection)   
-            __report.append(__unmatch_collection)
-            __report.append(__nomatch_collection)
-            __report.append(f"Row Count: {__row_count}")
-           
            # Write out html
-            f.write(tabulate(__report, tablefmt="pipe"))
+            f.write('</table>')
+            f.write('</tbody>')
     
     except FileNotFoundError:
         print(f"Error: Directory not found: {dir_path}")
