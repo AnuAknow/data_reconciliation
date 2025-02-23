@@ -67,14 +67,10 @@ def create_diff_report(dir_path, csv_file1, csv_file2, output_file):
         os.chdir(dir_path)
         print(f"Directory changed to: {os.getcwd()}")
 
-        with open(csv_file2, 'r') as file, open('plexxis_zenefits_table.html', 'w') as f:
+        with open(csv_file2, 'r') as file, open('plexxis_zenefits_table.txt', 'w') as f:
             __csv_reader = csv.reader(file)
             __row_count = 0
-            f.write(str('<!DOCTYPE html>'))
-            f.write(str('<html>'))
-            f.write(str('<body>'))
-            f.write(str('<table>'))
-            f.write(str('<tbody>'))
+
             for __csv_row in __csv_reader:
                 __matching_list, __unmatching_list = compare_row_to_csv(__csv_row, csv_file1)
                 if len(__matching_list) > 0:
@@ -83,12 +79,13 @@ def create_diff_report(dir_path, csv_file1, csv_file2, output_file):
                     print(__matching_list[0][2])
                     print(__matching_list[0][3])
                 
-                    # f.write('<tr><td>')
                     f.write(__matching_list[0][0])
                     f.write(__matching_list[0][1])
                     f.write(__matching_list[0][2])
                     f.write(__matching_list[0][3])
-                    # f.write('</td></tr>')
+                    if len(__unmatching_list[0][3]) > 1:
+                        for list in __unmatching_list[0][3]:
+                            f.write(list)
                     
                             
                 elif len(__unmatching_list) > 0:
@@ -96,23 +93,21 @@ def create_diff_report(dir_path, csv_file1, csv_file2, output_file):
                     print(__unmatching_list[0][1])
                     print(__unmatching_list[0][2])
                     print(__unmatching_list[0][3])
-                    
-                    # f.write('<tr><td>')
+                
                     f.write(__unmatching_list[0][0])
                     f.write(__unmatching_list[0][1])
                     f.write(__unmatching_list[0][2])
-                    f.write(__unmatching_list[0][3])
-                    # f.write('</td></tr>')   
+                    f.write(__unmatching_list[0][3]) 
+                    if len(__unmatching_list[0][3]) > 1:
+                        for list in __unmatching_list[0][3]:
+                            f.write(list)
+                        
+                        
                     
                 else:
                     print(f"No match: {__csv_row}")
                 __row_count += 1
                 #time.sleep(5) #only for debugging
-           # Write out html
-            f.write(str('</table>'))
-            f.write(str('</tbody>'))
-            f.write(str('</body>'))
-            f.write(str('</html>'))
     
     except FileNotFoundError:
         print(f"Error: Directory not found: {dir_path}")
