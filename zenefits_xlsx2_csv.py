@@ -84,11 +84,8 @@ def extract_employee_info(file_path, filename, heading, start_row, stop_row):
     
     try:
         # Change directory
-        chng_dir = os.path.join(current_directory, file_path)
-        path_exists =os.path.exists(chng_dir)
-        if path_exists != chng_dir:
-            os.chdir(file_path)
-            print(f"Directory changed to: {os.getcwd()}")
+        os.chdir(file_path)
+        print(f"Directory changed to: {os.getcwd()}")
         
         # Load the workbook and select the active worksheet
         workbook = openpyxl.load_workbook(filename)
@@ -188,13 +185,6 @@ def payroll_taxes(filepath, filename, heading, start_row, stop_row):
     print(f"Current directory: {current_directory}")
     
     try:
-        # Change directory
-        chng_dir = os.path.join(current_directory, filepath)
-        path_exists =os.path.exists(chng_dir)
-        if path_exists != chng_dir:
-            os.chdir(filepath)
-            print(f"Directory changed to: {os.getcwd()}")
-        
         # Load the workbook and select the active worksheet
         workbook = openpyxl.load_workbook(filename)
         sheet = workbook.active
@@ -279,14 +269,7 @@ def extract_taxes_paid(filepath, filename, heading):
     current_directory = os.getcwd()
     print(f"Current directory: {current_directory}")
     
-    try:
-        # Change directory
-        chng_dir = os.path.join(current_directory, filepath)
-        path_exists =os.path.exists(chng_dir)
-        if path_exists != chng_dir:
-            os.chdir(filepath)
-            print(f"Directory changed to: {os.getcwd()}")
-            
+    try:    
         # Load the workbook and select the active sheet
         wb = openpyxl.load_workbook(filename)
         sheet = wb.active
@@ -353,14 +336,7 @@ def write_file(dirpath, filename, headings, emp_data):
     print(f"Current directory: {current_directory}")
     
     # Change the current working directory
-    try:
-        # Change directory
-        chng_dir = os.path.join(current_directory, dirpath)
-        path_exists =os.path.exists(chng_dir)
-        if path_exists != chng_dir:
-            os.chdir(dirpath)
-            print(f"Directory changed to: {os.getcwd()}")
-        
+    try: 
         # Set Pandas dataframe display options
         # Display all rows
         pd.set_option('display.max_rows', None)
@@ -414,7 +390,7 @@ def write_file(dirpath, filename, headings, emp_data):
 if __name__ == '__main__':
     
     try:
-        user_input_filepath = get_filepath_input("Please enter the file path: ")
+        user_input_filepath = get_filepath_input("Please enter the file path (e.g. C:\\data): ")
         print(f"You entered: {user_input_filepath}")
     except ValueError as e:
         print(e)
@@ -440,8 +416,8 @@ if __name__ == '__main__':
     except ValueError as e:
         print(e)
     # print(len(l_payroll_taxes))
-    # print(l_payroll_taxes)
-    # print(l_payroll_taxes_headings)
+    print(l_payroll_taxes)
+    print(l_payroll_taxes_headings)
     
     # Extract Taxes Paid
     try:
@@ -470,7 +446,7 @@ if __name__ == '__main__':
     
     # Write *.csv file to directory
     try:
-        output_file = write_file(user_input_filepath, user_input_filename, l_combined_headings, l_combined_emp_tax)
+        output_file = write_file(filepath, filename, l_combined_headings, l_combined_emp_tax)
         print(f"CSV file {output_file} has been processed and written to {user_input_filepath}!")
     except ValueError as e:
         print(e)

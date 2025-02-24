@@ -91,11 +91,8 @@ def read_excel_ranges(file, first_range, second_range, sort_column, dir_path):
     # Change the current working directory
     try:
         # Change directory
-        chng_dir = os.path.join(current_directory, dir_path)
-        path_exists =os.path.exists(chng_dir)
-        if path_exists != chng_dir:
-            os.chdir(dir_path)
-            print(f"Directory changed to: {os.getcwd()}")
+        os.chdir(dir_path)
+        print(f"Directory changed to: {os.getcwd()}")
         
         # Load the workbook and select the active worksheet
         workbook = openpyxl.load_workbook(file)
@@ -177,13 +174,6 @@ def sort_csv(dir_path, input_csv_file, output_csv_file, sort_column_index, rever
     
     # Change the current working directory
     try:
-        # Change directory
-        chng_dir = os.path.join(current_directory, dir_path)
-        path_exists =os.path.exists(chng_dir)
-        if path_exists != chng_dir:
-            os.chdir(dir_path)
-            print(f"Directory changed to: {os.getcwd()}")
-        
         with open(input_csv_file, 'r') as infile, open(output_csv_file, 'w', newline='') as outfile:
             reader = csv.reader(infile)
             header = next(reader)
@@ -213,7 +203,7 @@ def sort_csv(dir_path, input_csv_file, output_csv_file, sort_column_index, rever
 if __name__ == '__main__':
     
     try:
-        dir_path = get_filepath_input("Please enter the file path (e.g. C:\data): ")
+        dir_path = get_filepath_input("Please enter the file path (e.g. C:\\data): ")
         print(f"You entered: {dir_path}")
     except ValueError as e:
         print(e)

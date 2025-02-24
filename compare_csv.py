@@ -111,12 +111,9 @@ def create_diff_report(dir_path, csv_file1, csv_file2, output_file):
     # Change the current working directory
     try:
         # Change directory
-        chng_dir = os.path.join(current_directory, dir_path)
-        path_exists =os.path.exists(chng_dir)
-        if path_exists != chng_dir:
-            os.chdir(dir_path)
-            print(f"Directory changed to: {os.getcwd()}")
-
+        os.chdir(dir_path)
+        print(f"Directory changed to: {os.getcwd()}")
+        
         with open(csv_file2, 'r') as file, open(output_file, 'w') as f:
             __csv_reader = csv.reader(file)
             __row_count = 0
@@ -143,8 +140,11 @@ def create_diff_report(dir_path, csv_file1, csv_file2, output_file):
                     Write matching output to file
                     '''
                     f.write("".join(__matching_list[0][0]))
+                    f.write("\n")
                     f.write("|".join(__matching_list[0][1]))
+                    f.write("\n")
                     f.write("|".join(__matching_list[0][2]))
+                    f.write("\n")
                     if len(__matching_list[0][3]) > 1:
                         for index in range(len(__matching_list[0][3])):
                             if index == 0:
@@ -174,8 +174,11 @@ def create_diff_report(dir_path, csv_file1, csv_file2, output_file):
                     Write matching output to file
                     '''
                     f.write("".join(__unmatching_list[0][0]))
+                    f.write("\n")
                     f.write("|".join(__unmatching_list[0][1]))
+                    f.write("\n")
                     f.write("|".join(__unmatching_list[0][2]))
+                    f.write("\n")
                     if len(__unmatching_list[0][3]) > 1:
                         for index in range(len(__unmatching_list[0][3])):
                             if index == 0:
@@ -216,7 +219,7 @@ def create_diff_report(dir_path, csv_file1, csv_file2, output_file):
 if __name__ == '__main__':
     
     try:
-        user_input_filepath = get_filepath_input("Please enter the file path (e.g. C:\data): ")
+        user_input_filepath = get_filepath_input("Please enter the file path (e.g. C:\\data): ")
         print(f"You entered: {user_input_filepath}")
     except ValueError as e:
         print(e)
