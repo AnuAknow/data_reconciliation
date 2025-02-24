@@ -53,7 +53,7 @@ def get_filename_input(prompt):
             
     raise ValueError("Maximum attempts exceeded. Valid input not provided.")
 
-def extract_employee_info(file_path, heading, start_row, stop_row):
+def extract_employee_info(file_path, filename, heading, start_row, stop_row):
     """
     This python function extracts data by:
     
@@ -78,67 +78,87 @@ def extract_employee_info(file_path, heading, start_row, stop_row):
     the parameters to fit your specific needs.
     
     """
+    # Get the current working directory
+    current_directory = os.getcwd()
+    print(f"Current directory: {current_directory}")
     
-    # Load the workbook and select the active worksheet
-    workbook = openpyxl.load_workbook(file_path)
-    sheet = workbook.active
+    try:
+        # Change directory
+        if file_path not in current_directory:
+            os.chdir(file_path)
+            print(f"Directory changed to: {os.getcwd()}")
+        
+        # Load the workbook and select the active worksheet
+        workbook = openpyxl.load_workbook(filename)
+        sheet = workbook.active
 
-    # Find the column based on the given heading
-    heading_column = None
-    for col in range(1, sheet.max_column + 1):
-        if sheet.cell(row=start_row, column=col).value == heading:
-            heading_column = col
-            break
-
-    if heading_column is None:
-        print(f'Heading "{heading}" not found.')
-        return []
-    
-    # Initialize an empty list to store the employee data labels
-    extracted_heading = []
-    # Initialize an empty list to store the extracted data
-    employee_data = []
-    
-    # Loop through the specified range of rows
-    row = start_row + 1
-    
-    while row <= stop_row:
-        extracted_data = []
-        for _ in range(10):
-            if row >= stop_row:
+        # Find the column based on the given heading
+        heading_column = None
+        for col in range(1, sheet.max_column + 1):
+            if sheet.cell(row=start_row, column=col).value == heading:
+                heading_column = col
                 break
-            merged_cell_value = sheet.cell(row=row, column=heading_column).value
-            if merged_cell_value != None:
-                emp_info = re.sub(r"\n+", ", ", merged_cell_value, count=0)
-                add_fname_title = "First Name: " + emp_info
-                add_lname_title = re.sub(r",", " ,Last Name:", add_fname_title, count=1)
-                current_emp_info_l = add_lname_title.strip().split(",")
-                for indx in range(len(current_emp_info_l)):
-                    label_data = current_emp_info_l[indx].split(":")
-                    if label_data[0].strip() not in extracted_heading:
-                        extracted_heading.append(label_data[0].strip())
-                    if label_data[1] == None:
-                        extracted_data.append("None")
-                    else: 
-                        extracted_data.append(label_data[1].strip())
+
+        if heading_column is None:
+            print(f'Heading "{heading}" not found.')
+            return []
+        
+        # Initialize an empty list to store the employee data labels
+        extracted_heading = []
+        # Initialize an empty list to store the extracted data
+        employee_data = []
+        
+        # Loop through the specified range of rows
+        row = start_row + 1
+        
+        while row <= stop_row:
+            extracted_data = []
+            for _ in range(10):
+                if row >= stop_row:
+                    break
+                merged_cell_value = sheet.cell(row=row, column=heading_column).value
+                if merged_cell_value != None:
+                    emp_info = re.sub(r"\n+", ", ", merged_cell_value, count=0)
+                    add_fname_title = "First Name: " + emp_info
+                    add_lname_title = re.sub(r",", " ,Last Name:", add_fname_title, count=1)
+                    current_emp_info_l = add_lname_title.strip().split(",")
+                    for indx in range(len(current_emp_info_l)):
+                        label_data = current_emp_info_l[indx].split(":")
+                        if label_data[0].strip() not in extracted_heading:
+                            extracted_heading.append(label_data[0].strip())
+                        if label_data[1] == None:
+                            extracted_data.append("None")
+                        else: 
+                            extracted_data.append(label_data[1].strip())
+                    
+                    row += 1
+
+            # Advance 1 row before extracting the next set of 10 rows
+            if len(extracted_data) > 0:
+                # Remove beginning of payperiod date
+                extracted_data[5] = re.sub(r"\d\d\d\d-\d\d-\d\d\s-\s","", extracted_data[5])
                 
-                row += 1
-
-        # Advance 1 row before extracting the next set of 10 rows
-        if len(extracted_data) > 0:
-            # Remove beginning of payperiod date
-            extracted_data[5] = re.sub(r"\d\d\d\d-\d\d-\d\d\s-\s","", extracted_data[5])
-            
-            # Update "Net Pay" to currency format
-            v_type = float(extracted_data[(len(extracted_data)-1)].replace('$', ""))
-            extracted_data[(len(extracted_data)-1)] = '${:,.2f}'.format(v_type)
-            employee_data.append(extracted_data)
-        row += 1
-
+                # Update "Net Pay" to currency format
+                v_type = float(extracted_data[(len(extracted_data)-1)].replace('$', ""))
+                extracted_data[(len(extracted_data)-1)] = '${:,.2f}'.format(v_type)
+                employee_data.append(extracted_data)
+            row += 1
+    except FileNotFoundError:
+        print(f"Error: Directory not found: {file_path}")
+        sys.exit(1)
+    except NotADirectoryError:
+        print(f"Error: Not a directory: {file_path}")
+        sys.exit(1)
+    except PermissionError:
+        print(f"Error: Permission denied to access: {file_path}")
+        sys.exit(1)
+    except Exception as e:
+        print(f"An unexpected error occurred: {e}")
+        sys.exit(1)
     return extracted_heading, employee_data
 
 
-def payroll_taxes(filepath, heading, start_row, stop_row):
+def payroll_taxes(filepath, filename, heading, start_row, stop_row):
     """
     
     This python function extracts data by: 
@@ -161,7 +181,16 @@ def payroll_taxes(filepath, heading, start_row, stop_row):
         A list of extracted values, or an empty list if the heading is not found.
         Returns an error message if there is an issue with the excel file.
     """
+    # Get the current working directory
+    current_directory = os.getcwd()
+    print(f"Current directory: {current_directory}")
+    
     try:
+        # Change directory
+        if filepath not in current_directory:
+            os.chdir(filepath)
+            print(f"Directory changed to: {os.getcwd()}")
+        
         # Load the workbook and select the active worksheet
         workbook = openpyxl.load_workbook(filepath)
         sheet = workbook.active
@@ -208,14 +237,21 @@ def payroll_taxes(filepath, heading, start_row, stop_row):
             payroll_tax.append(extracted_payroll_tax)
             row += 4
 
-        return extracted_payroll_tax_label, payroll_tax
     except FileNotFoundError:
-        return "Error: File not found."
-    except Exception as e: # Catch other potential exceptions like invalid excel file
-        return f"Error: An error occurred: {e}"
+        print(f"Error: Directory not found: {filepath}")
+        sys.exit(1)
+    except NotADirectoryError:
+        print(f"Error: Not a directory: {filepath}")
+        sys.exit(1)
+    except PermissionError:
+        print(f"Error: Permission denied to access: {filepath}")
+        sys.exit(1)
+    except Exception as e:
+        print(f"An unexpected error occurred: {e}")
+        sys.exit(1)
+    return extracted_payroll_tax_label, payroll_tax
             
-            
-def extract_taxes_paid(filepath, heading):
+def extract_taxes_paid(filepath, filename, heading):
     """
     Python script using the openpyxl library to accomplish the task of extracting data 
     from 10 merged rows beneath a heading, advancing 1 row, and continuing the extraction 
@@ -235,38 +271,58 @@ def extract_taxes_paid(filepath, heading):
     # Array for taxes paid
     __taxes = list()
     
-    # Load the workbook and select the active sheet
-    wb = openpyxl.load_workbook(filepath)
-    sheet = wb.active
+    # Get the current working directory
+    current_directory = os.getcwd()
+    print(f"Current directory: {current_directory}")
+    
+    try:
+        # Change directory
+        if filepath not in current_directory:
+            os.chdir(filepath)
+            print(f"Directory changed to: {os.getcwd()}")
+            
+        # Load the workbook and select the active sheet
+        wb = openpyxl.load_workbook(filename)
+        sheet = wb.active
 
-    # Find the row containing the heading
-    heading_row = None
-    for row in sheet.iter_rows():
-        for cell in row:
-            if cell.value == heading:
-                heading_row = cell.row
+        # Find the row containing the heading
+        heading_row = None
+        for row in sheet.iter_rows():
+            for cell in row:
+                if cell.value == heading:
+                    heading_row = cell.row
+                    break
+            if heading_row:
                 break
-        if heading_row:
-            break
-    
-    if heading_row is None:
-        print(f"Heading '{heading}' not found.")
 
-    # Print the values from every 10 cells in column J after the heading
-    col_j_index = openpyxl.utils.column_index_from_string('J')
-    row_index = heading_row + 10
+        if heading_row is None:
+            print(f"Heading '{heading}' not found.")
 
-    
-    while True:
-        cell_value = sheet.cell(row=row_index, column=col_j_index).value
-        if cell_value is None:
-            break
-        
-        if cell_value is not heading:
-            taxes = locale.currency(cell_value, grouping=True) 
-            __taxes.append(taxes) 
-        row_index += 10
-        
+        # Print the values from every 10 cells in column J after the heading
+        col_j_index = openpyxl.utils.column_index_from_string('J')
+        row_index = heading_row + 10
+
+        while True:
+            cell_value = sheet.cell(row=row_index, column=col_j_index).value
+            if cell_value is None:
+                break
+            
+            if cell_value is not heading:
+                taxes = locale.currency(cell_value, grouping=True) 
+                __taxes.append(taxes) 
+            row_index += 10
+    except FileNotFoundError:
+        print(f"Error: Directory not found: {filepath}")
+        sys.exit(1)
+    except NotADirectoryError:
+        print(f"Error: Not a directory: {filepath}")
+        sys.exit(1)
+    except PermissionError:
+        print(f"Error: Permission denied to access: {filepath}")
+        sys.exit(1)
+    except Exception as e:
+        print(f"An unexpected error occurred: {e}")
+        sys.exit(1)
     return __taxes
 
 def combine_list(x, y, z):
@@ -282,9 +338,6 @@ def combine_data_lists(x, y, z):
 
 def write_file(dirpath, filename, headings, emp_data):
     
-    # Define the target directory path
-    new_directory = dirpath
-    
     # Create an output file with the name of the original
     filename = re.sub("xlsx", "csv", filename)
     
@@ -294,8 +347,9 @@ def write_file(dirpath, filename, headings, emp_data):
     
     # Change the current working directory
     try:
-        os.chdir(new_directory)
-        print(f"Directory changed to: {os.getcwd()}")
+        if dirpath not in current_directory:
+            os.chdir(dirpath)
+            print(f"Directory changed to: {os.getcwd()}")
         
         # Set Pandas dataframe display options
         # Display all rows
@@ -334,13 +388,13 @@ def write_file(dirpath, filename, headings, emp_data):
         df.to_csv(filtered_filename, index=False)
     
     except FileNotFoundError:
-        print(f"Error: Directory not found: {new_directory}")
+        print(f"Error: Directory not found: {dirpath}")
         sys.exit(1)
     except NotADirectoryError:
-        print(f"Error: Not a directory: {new_directory}")
+        print(f"Error: Not a directory: {dirpath}")
         sys.exit(1)
     except PermissionError:
-        print(f"Error: Permission denied to access: {new_directory}")
+        print(f"Error: Permission denied to access: {dirpath}")
         sys.exit(1)
     except Exception as e:
         print(f"An unexpected error occurred: {e}")
@@ -360,35 +414,52 @@ if __name__ == '__main__':
     except ValueError as e:
         print(e)
 
-    filepath = user_input_filepath + '\\' + user_input_filename  # Replace with your file path
-
+    filepath = user_input_filepath 
+    filename = user_input_filename
     # Extract Employee Headings and Info
-    l_emp_info_heading, l_emp_info = extract_employee_info(filepath, heading='Employees', start_row=7, stop_row=697)
+    try:
+        l_emp_info_heading, l_emp_info = extract_employee_info(filepath, filename, heading='Employees', start_row=7, stop_row=697)
+    except ValueError as e:
+        print(e)
     # print(l_emp_info_heading)  
    
     # Extract Payroll Headings and Taxes
-    l_payroll_taxes_headings, l_payroll_taxes = payroll_taxes(filepath, heading='Employee-paid Taxes', start_row=7, stop_row=697)
+    try:
+        l_payroll_taxes_headings, l_payroll_taxes = payroll_taxes(filepath, filename, heading='Employee-paid Taxes', start_row=7, stop_row=697)
+    except ValueError as e:
+        print(e)
     # print(len(l_payroll_taxes))
     # print(l_payroll_taxes)
     # print(l_payroll_taxes_headings)
     
     # Extract Taxes Paid
-    l_taxes_paid = extract_taxes_paid(filepath, heading='Amount')
-    v_taxes_paid_heading= 'Taxes Paid'
+    try:
+        l_taxes_paid = extract_taxes_paid(filepath, filename, heading='Amount')
+        v_taxes_paid_heading= 'Taxes Paid'
+    except ValueError as e:
+        print(e)
     # print(len(l_taxes_paid))
     # print(l_taxes_paid)
     # print(v_taxes_paid_heading)
   
 
     # Combined Employee info and Tax headings
-    l_combined_headings = combine_list(l_emp_info_heading, l_payroll_taxes_headings, v_taxes_paid_heading)
+    try:
+        l_combined_headings = combine_list(l_emp_info_heading, l_payroll_taxes_headings, v_taxes_paid_heading)
+    except ValueError as e:
+        print(e)
     # print(l_combined_headings)
 
-    # Combine Employee info and Payroll and Total taxes paid 
-    l_combined_emp_tax = combine_data_lists(l_emp_info, l_payroll_taxes, l_taxes_paid)
+    # Combine Employee info and Payroll and Total taxes paid
+    try: 
+        l_combined_emp_tax = combine_data_lists(l_emp_info, l_payroll_taxes, l_taxes_paid)
+    except ValueError as e:
+        print(e)
     # print(l_combined_emp_tax)
     
     # Write *.csv file to directory
-    output_file = write_file(user_input_filepath, user_input_filename, l_combined_headings, l_combined_emp_tax)
-    
-    print(f"CSV file {output_file} has been processed and written to {user_input_filepath}!")
+    try:
+        output_file = write_file(user_input_filepath, user_input_filename, l_combined_headings, l_combined_emp_tax)
+        print(f"CSV file {output_file} has been processed and written to {user_input_filepath}!")
+    except ValueError as e:
+        print(e)

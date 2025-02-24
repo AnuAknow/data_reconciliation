@@ -237,6 +237,7 @@ if __name__ == '__main__':
     
     try:
         sorted_file = sort_csv(dir_path, input_csv_file, output_csv_file, sort_column_index)
+        print(f"CSV file {sorted_file} has been processed and written to {dir_path}!")
     except ValueError as e:
         print(e)
-    print(f"CSV file {sorted_file} has been processed and written to {dir_path}!")
+    

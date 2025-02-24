@@ -244,7 +244,8 @@ if __name__ == '__main__':
     
     try:
         create_diff_report(dir_path, csv_file1, csv_file2, output_file)
+        print(f"CSV file {dir_path} has been processed and written to {output_file}!")
     except ValueError as e:
         print(e) 
     
-    print(f"CSV file {dir_path} has been processed and written to {output_file}!")
+    
