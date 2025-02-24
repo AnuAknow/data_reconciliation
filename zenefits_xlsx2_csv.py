@@ -389,15 +389,25 @@ def write_file(dirpath, filename, headings, emp_data):
 
 if __name__ == '__main__':
     
+    file_path_input_prompt =  '''
+    Please enter the folder were the files\n
+    are stored relative to this script 
+    (e.g. C:\\<script directory>\\data): 
+    '''
+    dir_path_input_prompt = '''
+    Please enter a <Zenefits>.xlsx files.\n
+    Zenefit file name: "
+    '''
+    
     try:
-        user_input_filepath = get_filepath_input("Please enter the file path (e.g. C:\\data): ")
+        user_input_filepath = get_filepath_input(file_path_input_prompt)
         print(f"You entered: {user_input_filepath}")
     except ValueError as e:
         print(e)
     
     try:
-        user_input_filename = get_filename_input("Please enter the file name: ")
-        print(f"You entered: {user_input_filename}")
+        user_input_filename = get_filename_input(dir_path_input_prompt)
+        print(f"You entered: {dir_path_input_prompt}")
     except ValueError as e:
         print(e)
 

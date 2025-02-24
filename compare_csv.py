@@ -218,26 +218,42 @@ def create_diff_report(dir_path, csv_file1, csv_file2, output_file):
     
 if __name__ == '__main__':
     
+    file_path_input_prompt =  '''
+    Please enter the folder were the files
+    are stored relative to this script (e.g. C:\\<script directory>\\data): 
+    '''
+    file_input_plexxis_prompt = '''
+    Please enter a sorted_<Plexxis>.csv files.
+    file name: 
+    '''
+    file_input_zenefits_prompt = '''
+    Please enter a <Zenefits>.csv files.
+    file name: 
+    '''
+    output_file_name_prompt = '''
+    Please enter an output file <Plexxis_Zenefits>.txt files.\n
+    (e.g. Plexxis_Zenefit_comparision_report_<Date>.txt) file name: 
+    '''
     try:
-        user_input_filepath = get_filepath_input("Please enter the file path (e.g. C:\\data): ")
+        user_input_filepath = get_filepath_input(file_path_input_prompt)
         print(f"You entered: {user_input_filepath}")
     except ValueError as e:
         print(e)
     
     try:
-        user_input_filename1 = get_filename_input("Please enter the file1 name: ")
+        user_input_filename1 = get_filename_input(file_input_plexxis_prompt)
         print(f"You entered: {user_input_filename1}")
     except ValueError as e:
         print(e) 
     
     try:
-        user_input_filename2 = get_filename_input("Please enter the file2 name: ")
+        user_input_filename2 = get_filename_input(file_input_zenefits_prompt)
         print(f"You entered: {user_input_filename2}")
     except ValueError as e:
         print(e) 
     
     try:
-        user_output_filename_input = get_output_filename_input("Please enter the output file name: ")
+        user_output_filename_input = get_output_filename_input(output_file_name_prompt)
         print(f"You entered: {user_output_filename_input}")
     except ValueError as e:
         print(e) 

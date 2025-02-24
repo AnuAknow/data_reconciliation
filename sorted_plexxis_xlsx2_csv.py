@@ -202,14 +202,24 @@ def sort_csv(dir_path, input_csv_file, output_csv_file, sort_column_index, rever
 
 if __name__ == '__main__':
     
+    file_path_input_prompt =  '''
+    Please enter the folder were the files\n
+    are stored relative to this script 
+    (e.g. C:\\<script directory>\\data): 
+    '''
+    file_input_prompt = '''
+    Please enter a <Plexxis>.xlsx files.\n
+    Zenefit file name: "
+    '''
+    
     try:
-        dir_path = get_filepath_input("Please enter the file path (e.g. C:\\data): ")
+        dir_path = get_filepath_input(file_path_input_prompt)
         print(f"You entered: {dir_path}")
     except ValueError as e:
         print(e)
     
     try:
-        file = get_filename_input("Please enter the file name (e.g. ): ")
+        file = get_filename_input(file_input_prompt)
         print(f"You entered: {file}")
     except ValueError as e:
         print(e)
