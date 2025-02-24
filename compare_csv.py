@@ -3,7 +3,6 @@ from tabulate import tabulate
 import time
 import csv
 import os
-import re
 import sys
 
 
@@ -111,8 +110,11 @@ def create_diff_report(dir_path, csv_file1, csv_file2, output_file):
     
     # Change the current working directory
     try:
-        os.chdir(dir_path)
-        print(f"Directory changed to: {os.getcwd()}")
+        # Change directory
+        path_exits =os.path.exists(current_directory + "\\" + dir_path)
+        if path_exits == False:
+            os.chdir(dir_path)
+            print(f"Directory changed to: {os.getcwd()}")
 
         with open(csv_file2, 'r') as file, open(output_file, 'w') as f:
             __csv_reader = csv.reader(file)

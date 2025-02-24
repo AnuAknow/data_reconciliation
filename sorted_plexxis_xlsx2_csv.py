@@ -69,13 +69,6 @@ In this script:
 
 def read_excel_ranges(file, first_range, second_range, sort_column, dir_path):
     
-    # Combine file_path (name) with dir_path (directory)
-    file_name = dir_path + '\\' + file
-    # Load the workbook and select the active worksheet
-    workbook = openpyxl.load_workbook(file_name)
-    sheet = workbook.active
-
-    
     # Helper function to format as currency
     def format_currency(amount):
         return '${:,.2f}'.format(amount)
@@ -97,8 +90,15 @@ def read_excel_ranges(file, first_range, second_range, sort_column, dir_path):
     
     # Change the current working directory
     try:
-        os.chdir(dir_path)
-        print(f"Directory changed to: {os.getcwd()}")
+        # Change directory
+        path_exits =os.path.exists(current_directory + "\\" + dir_path)
+        if path_exits == False:
+            os.chdir(dir_path)
+            print(f"Directory changed to: {os.getcwd()}")
+        
+        # Load the workbook and select the active worksheet
+        workbook = openpyxl.load_workbook(file)
+        sheet = workbook.active
         
         # Set Pandas dataframe display options
         # Display all rows

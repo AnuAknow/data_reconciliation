@@ -84,7 +84,8 @@ def extract_employee_info(file_path, filename, heading, start_row, stop_row):
     
     try:
         # Change directory
-        if file_path not in current_directory:
+        path_exits =os.path.exists(current_directory + "\\" + file_path)
+        if path_exits == False:
             os.chdir(file_path)
             print(f"Directory changed to: {os.getcwd()}")
         
@@ -187,12 +188,13 @@ def payroll_taxes(filepath, filename, heading, start_row, stop_row):
     
     try:
         # Change directory
-        if filepath not in current_directory:
+        path_exits =os.path.exists(current_directory + "\\" + filepath)
+        if path_exits == False:
             os.chdir(filepath)
             print(f"Directory changed to: {os.getcwd()}")
         
         # Load the workbook and select the active worksheet
-        workbook = openpyxl.load_workbook(filepath)
+        workbook = openpyxl.load_workbook(filename)
         sheet = workbook.active
 
         # Find the column based on the given heading
@@ -277,7 +279,8 @@ def extract_taxes_paid(filepath, filename, heading):
     
     try:
         # Change directory
-        if filepath not in current_directory:
+        path_exits =os.path.exists(current_directory + "\\" + filepath)
+        if path_exits == False:
             os.chdir(filepath)
             print(f"Directory changed to: {os.getcwd()}")
             
@@ -347,7 +350,9 @@ def write_file(dirpath, filename, headings, emp_data):
     
     # Change the current working directory
     try:
-        if dirpath not in current_directory:
+        # Change directory
+        path_exits =os.path.exists(current_directory + "\\" + dirpath)
+        if path_exits == False:
             os.chdir(dirpath)
             print(f"Directory changed to: {os.getcwd()}")
         
