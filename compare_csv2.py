@@ -3,6 +3,7 @@ from tabulate import tabulate
 import time
 import csv
 import os
+import re
 import sys
 
 def create_diff_report(dir_path, csv_file1, csv_file2, output_file):
@@ -74,10 +75,18 @@ def create_diff_report(dir_path, csv_file1, csv_file2, output_file):
             for __csv_row in __csv_reader:
                 __matching_list, __unmatching_list = compare_row_to_csv(__csv_row, csv_file1)
                 if len(__matching_list) > 0:
-                    print(__matching_list[0][0])
-                    print(__matching_list[0][1])
-                    print(__matching_list[0][2])
-                    print(__matching_list[0][3])
+                    print("".join(__matching_list[0][0]))
+                    print("|".join(__matching_list[0][1]))
+                    print("|".join(__matching_list[0][2]))
+                    if len(__matching_list[0][3]) > 1:
+                        for index in range(len(__matching_list[0][3])):
+                            if index == 0:
+                                print("".join(__matching_list[0][3][index]))
+                            else:
+                                print("|".join(__matching_list[0][3][index]))
+                    print("\n")
+                    
+                 
                 
                     # f.write(__matching_list[0][0])
                     # f.write(__matching_list[0][1])
@@ -89,10 +98,16 @@ def create_diff_report(dir_path, csv_file1, csv_file2, output_file):
                     
                             
                 elif len(__unmatching_list) > 0:
-                    print(__unmatching_list[0][0])
-                    print(__unmatching_list[0][1])
-                    print(__unmatching_list[0][2])
-                    print(__unmatching_list[0][3])
+                    print("".join(__unmatching_list[0][0]))
+                    print("|".join(__unmatching_list[0][1]))
+                    print("|".join(__unmatching_list[0][2]))
+                    if len(__unmatching_list[0][3]) > 1:
+                        for index in range(len(__unmatching_list[0][3])):
+                            if index == 0:
+                                print("".join(__unmatching_list[0][3][index]))
+                            else:
+                                print("|".join(__unmatching_list[0][3][index]))
+                    print("\n")
                 
                     # f.write(__unmatching_list[0][0])
                     # f.write(__unmatching_list[0][1])
@@ -105,9 +120,14 @@ def create_diff_report(dir_path, csv_file1, csv_file2, output_file):
                         
                     
                 else:
-                    print(f"No match: {__csv_row}")
+                    if "First Name" in __csv_row:
+                        print("|".join(__csv_row))
+                    else:
+                        print("No Match")   
+                        print("|".join(__csv_row))
+                    print("\n")
                 __row_count += 1
-                #time.sleep(5) #only for debugging
+                time.sleep(3) #only for debugging
     
     except FileNotFoundError:
         print(f"Error: Directory not found: {dir_path}")
