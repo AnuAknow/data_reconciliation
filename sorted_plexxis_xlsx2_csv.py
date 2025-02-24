@@ -11,7 +11,6 @@ import re
 # Set the low level number formatting
 locale.setlocale(locale.LC_ALL, 'en_US.UTF-8')
 
-
 """
 This Python script accepts user input and checks if it's a non-empty string. 
 If the input is not a valid string or is empty, it will ask for input up to 3 
@@ -210,13 +209,13 @@ def sort_csv(dir_path, input_csv_file, output_csv_file, sort_column_index, rever
 if __name__ == '__main__':
     
     try:
-        dir_path = get_filepath_input("Please enter the file path: ")
+        dir_path = get_filepath_input("Please enter the file path (e.g. C:\data): ")
         print(f"You entered: {dir_path}")
     except ValueError as e:
         print(e)
     
     try:
-        file = get_filename_input("Please enter the file name: ")
+        file = get_filename_input("Please enter the file name (e.g. ): ")
         print(f"You entered: {file}")
     except ValueError as e:
         print(e)
