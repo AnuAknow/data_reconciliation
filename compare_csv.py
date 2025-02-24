@@ -111,8 +111,9 @@ def create_diff_report(dir_path, csv_file1, csv_file2, output_file):
     # Change the current working directory
     try:
         # Change directory
-        path_exits =os.path.exists(current_directory + "\\" + dir_path)
-        if path_exits == False:
+        chng_dir = os.path.join(current_directory, dir_path)
+        path_exists =os.path.exists(chng_dir)
+        if path_exists != chng_dir:
             os.chdir(dir_path)
             print(f"Directory changed to: {os.getcwd()}")
 

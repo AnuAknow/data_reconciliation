@@ -84,8 +84,9 @@ def extract_employee_info(file_path, filename, heading, start_row, stop_row):
     
     try:
         # Change directory
-        path_exits =os.path.exists(current_directory + "\\" + file_path)
-        if path_exits == False:
+        chng_dir = os.path.join(current_directory, file_path)
+        path_exists =os.path.exists(chng_dir)
+        if path_exists != chng_dir:
             os.chdir(file_path)
             print(f"Directory changed to: {os.getcwd()}")
         
@@ -188,8 +189,9 @@ def payroll_taxes(filepath, filename, heading, start_row, stop_row):
     
     try:
         # Change directory
-        path_exits =os.path.exists(current_directory + "\\" + filepath)
-        if path_exits == False:
+        chng_dir = os.path.join(current_directory, filepath)
+        path_exists =os.path.exists(chng_dir)
+        if path_exists != chng_dir:
             os.chdir(filepath)
             print(f"Directory changed to: {os.getcwd()}")
         
@@ -279,8 +281,9 @@ def extract_taxes_paid(filepath, filename, heading):
     
     try:
         # Change directory
-        path_exits =os.path.exists(current_directory + "\\" + filepath)
-        if path_exits == False:
+        chng_dir = os.path.join(current_directory, filepath)
+        path_exists =os.path.exists(chng_dir)
+        if path_exists != chng_dir:
             os.chdir(filepath)
             print(f"Directory changed to: {os.getcwd()}")
             
@@ -314,6 +317,7 @@ def extract_taxes_paid(filepath, filename, heading):
                 taxes = locale.currency(cell_value, grouping=True) 
                 __taxes.append(taxes) 
             row_index += 10
+            
     except FileNotFoundError:
         print(f"Error: Directory not found: {filepath}")
         sys.exit(1)
@@ -351,8 +355,9 @@ def write_file(dirpath, filename, headings, emp_data):
     # Change the current working directory
     try:
         # Change directory
-        path_exits =os.path.exists(current_directory + "\\" + dirpath)
-        if path_exits == False:
+        chng_dir = os.path.join(current_directory, dirpath)
+        path_exists =os.path.exists(chng_dir)
+        if path_exists != chng_dir:
             os.chdir(dirpath)
             print(f"Directory changed to: {os.getcwd()}")
         
@@ -405,6 +410,7 @@ def write_file(dirpath, filename, headings, emp_data):
         print(f"An unexpected error occurred: {e}")
         sys.exit(1)
     return filtered_filename
+
 if __name__ == '__main__':
     
     try:

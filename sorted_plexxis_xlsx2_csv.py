@@ -91,8 +91,9 @@ def read_excel_ranges(file, first_range, second_range, sort_column, dir_path):
     # Change the current working directory
     try:
         # Change directory
-        path_exits =os.path.exists(current_directory + "\\" + dir_path)
-        if path_exits == False:
+        chng_dir = os.path.join(current_directory, dir_path)
+        path_exists =os.path.exists(chng_dir)
+        if path_exists != chng_dir:
             os.chdir(dir_path)
             print(f"Directory changed to: {os.getcwd()}")
         
@@ -176,7 +177,10 @@ def sort_csv(dir_path, input_csv_file, output_csv_file, sort_column_index, rever
     
     # Change the current working directory
     try:
-        if dir_path not in current_directory:
+        # Change directory
+        chng_dir = os.path.join(current_directory, dir_path)
+        path_exists =os.path.exists(chng_dir)
+        if path_exists != chng_dir:
             os.chdir(dir_path)
             print(f"Directory changed to: {os.getcwd()}")
         
