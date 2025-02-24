@@ -1,0 +1,31 @@
+Plexxis_Tax Details_Ck Date 121523
+Zenefits_payroll_detail_Ck Date 121523
+
+    dir_path = 'data'
+    csv_file1 = 'sorted_Plexxis_Tax_Details_Ck_Date_121523.csv'
+    csv_file2 = 'Zenefits_payroll_detail_Ck_Date_121523.csv'
+    output_file = 'Zenefits_Plexxis_Tax_merge.txt'
+
+7-3
+6-2
+Mandatory overtime
+
+Mon-Sun once a week
+Profile section
+Document section
+Background check
+[0][0]
+
+[
+
+	['unmatching', 
+		['Valencia', 'Alfredo', '2023-12-10', '$0.00', '$22.15', '$175.23', '$40.98', '$25.44', '$2,562.45'], 
+		['Valencia', 'Alfredo', '2023-12-10', '$0.00', '$22.15', '$175.22', '$40.99', '$25.44', '$2,562.45'], 
+		['diffs',
+			['$175.23', '$40.98'], 
+			['$175.22', '$40.99']
+		]
+	]
+
+
+]

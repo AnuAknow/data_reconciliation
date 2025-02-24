@@ -6,6 +6,52 @@ import os
 import re
 import sys
 
+
+def get_filepath_input(prompt):
+    attempts = 0
+    max_attempts = 3
+    
+    while attempts <= max_attempts:
+        user_input = input(prompt)
+        
+        if isinstance(user_input, str) and user_input.strip():
+            return user_input
+        else:
+            attempts += 1
+            print(f"Invalid input. Please enter a non-empty string. Attempts remaining: {max_attempts - attempts + 1}")
+            
+    raise ValueError("Maximum attempts exceeded. Valid input not provided.")
+
+def get_filename_input(prompt):
+    attempts = 0
+    max_attempts = 3
+    
+    while attempts <= max_attempts:
+        user_input = input(prompt)
+        
+        if isinstance(user_input, str) and user_input.strip():
+            return user_input
+        else:
+            attempts += 1
+            print(f"Invalid input. Please enter a non-empty string. Attempts remaining: {max_attempts - attempts + 1}")
+            
+    raise ValueError("Maximum attempts exceeded. Valid input not provided.")
+
+def get_output_filename_input(prompt):
+    attempts = 0
+    max_attempts = 3
+    
+    while attempts <= max_attempts:
+        user_input = input(prompt)
+        
+        if isinstance(user_input, str) and user_input.strip():
+            return user_input
+        else:
+            attempts += 1
+            print(f"Invalid input. Please enter a non-empty string. Attempts remaining: {max_attempts - attempts + 1}")
+            
+    raise ValueError("Maximum attempts exceeded. Valid input not provided.")
+
 def create_diff_report(dir_path, csv_file1, csv_file2, output_file):
     def compare_row_to_csv(row, csv_filepath):
         """
@@ -165,10 +211,40 @@ def create_diff_report(dir_path, csv_file1, csv_file2, output_file):
         sys.exit(1)    
     
 if __name__ == '__main__':
-    dir_path = 'data'
-    csv_file1 = 'sorted_Plexxis_Tax_Details_Ck_Date_121523.csv'
-    csv_file2 = 'Zenefits_payroll_detail_Ck_Date_121523.csv'
-    output_file = 'Zenefits_Plexxis_Tax_merge.txt'
-    create_diff_report(dir_path, csv_file1, csv_file2, output_file)
+    
+    try:
+        user_input_filepath = get_filepath_input("Please enter the file path (e.g. C:\data): ")
+        print(f"You entered: {user_input_filepath}")
+    except ValueError as e:
+        print(e)
+    
+    try:
+        user_input_filename1 = get_filename_input("Please enter the file1 name: ")
+        print(f"You entered: {user_input_filename1}")
+    except ValueError as e:
+        print(e) 
+    
+    try:
+        user_input_filename2 = get_filename_input("Please enter the file2 name: ")
+        print(f"You entered: {user_input_filename2}")
+    except ValueError as e:
+        print(e) 
+    
+    try:
+        user_output_filename_input = get_output_filename_input("Please enter the output file name: ")
+        print(f"You entered: {user_output_filename_input}")
+    except ValueError as e:
+        print(e) 
+    
+    '''Args'''    
+    dir_path = user_input_filepath
+    csv_file1 = user_input_filename1
+    csv_file2 = user_input_filename2
+    output_file = user_output_filename_input
+    
+    try:
+        create_diff_report(dir_path, csv_file1, csv_file2, output_file)
+    except ValueError as e:
+        print(e) 
     
     print(f"CSV file {dir_path} has been processed and written to {output_file}!")
