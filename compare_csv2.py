@@ -68,13 +68,17 @@ def create_diff_report(dir_path, csv_file1, csv_file2, output_file):
         os.chdir(dir_path)
         print(f"Directory changed to: {os.getcwd()}")
 
-        with open(csv_file2, 'r') as file, open('plexxis_zenefits_table.txt', 'w') as f:
+        with open(csv_file2, 'r') as file, open(output_file, 'w') as f:
             __csv_reader = csv.reader(file)
             __row_count = 0
 
             for __csv_row in __csv_reader:
                 __matching_list, __unmatching_list = compare_row_to_csv(__csv_row, csv_file1)
                 if len(__matching_list) > 0:
+                    
+                    ''' 
+                    Print matching output on screen
+                    '''
                     print("".join(__matching_list[0][0]))
                     print("|".join(__matching_list[0][1]))
                     print("|".join(__matching_list[0][2]))
@@ -86,18 +90,26 @@ def create_diff_report(dir_path, csv_file1, csv_file2, output_file):
                                 print("|".join(__matching_list[0][3][index]))
                     print("\n")
                     
-                 
-                
-                    # f.write(__matching_list[0][0])
-                    # f.write(__matching_list[0][1])
-                    # f.write(__matching_list[0][2])
-                    # f.write(__matching_list[0][3])
-                    # if len(__unmatching_list[0][3]) > 1:
-                    #     for list in __unmatching_list[0][3]:
-                    #         f.write(list)
+                    ''' 
+                    Write matching output to file
+                    '''
+                    f.write("".join(__matching_list[0][0]))
+                    f.write("|".join(__matching_list[0][1]))
+                    f.write("|".join(__matching_list[0][2]))
+                    if len(__matching_list[0][3]) > 1:
+                        for index in range(len(__matching_list[0][3])):
+                            if index == 0:
+                                f.write("".join(__matching_list[0][3][index]))
+                            else:
+                                f.write("|".join(__matching_list[0][3][index]))
+                    f.write("\n")
                     
                             
                 elif len(__unmatching_list) > 0:
+                    
+                    ''' 
+                    Print matching output on screen
+                    '''
                     print("".join(__unmatching_list[0][0]))
                     print("|".join(__unmatching_list[0][1]))
                     print("|".join(__unmatching_list[0][2]))
@@ -109,23 +121,33 @@ def create_diff_report(dir_path, csv_file1, csv_file2, output_file):
                                 print("|".join(__unmatching_list[0][3][index]))
                     print("\n")
                 
-                    # f.write(__unmatching_list[0][0])
-                    # f.write(__unmatching_list[0][1])
-                    # f.write(__unmatching_list[0][2])
-                    # f.write(__unmatching_list[0][3]) 
-                    # if len(__unmatching_list[0][3]) > 1:
-                    #     for list in __unmatching_list[0][3]:
-                    #         f.write(list)
-                        
-                        
-                    
+                    ''' 
+                    Write matching output to file
+                    '''
+                    f.write("".join(__unmatching_list[0][0]))
+                    f.write("|".join(__unmatching_list[0][1]))
+                    f.write("|".join(__unmatching_list[0][2]))
+                    if len(__unmatching_list[0][3]) > 1:
+                        for index in range(len(__unmatching_list[0][3])):
+                            if index == 0:
+                                f.write("".join(__unmatching_list[0][3][index]))
+                            else:
+                                f.write("|".join(__unmatching_list[0][3][index]))
+                    f.write("\n")
+                
                 else:
+                    '''
+                    Print and write Header
+                    '''
                     if "First Name" in __csv_row:
                         print("|".join(__csv_row))
+                        f.write("|".join(__csv_row))
                     else:
                         print("No Match")   
                         print("|".join(__csv_row))
+                        f.write("|".join(__csv_row))
                     print("\n")
+                    f.write("\n")
                 __row_count += 1
                 time.sleep(3) #only for debugging
     

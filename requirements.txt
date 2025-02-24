@@ -1,3 +1,4 @@
+altgraph==0.17.4
 anyio==4.8.0
 argon2-cffi==23.1.0
 argon2-cffi-bindings==21.2.0
@@ -63,6 +64,7 @@ packaging==24.2
 pandas==2.2.3
 pandocfilters==1.5.1
 parso==0.8.4
+pefile==2023.2.7
 platformdirs==4.3.6
 pretty-html-table==0.9.16
 prometheus_client==0.21.1
@@ -71,10 +73,13 @@ psutil==7.0.0
 pure_eval==0.2.3
 pycparser==2.22
 Pygments==2.19.1
+pyinstaller==6.12.0
+pyinstaller-hooks-contrib==2025.1
 python-dateutil==2.9.0.post0
 python-json-logger==3.2.1
 pytz==2025.1
 pywin32==308
+pywin32-ctypes==0.2.3
 pywinpty==2.0.15
 PyYAML==6.0.2
 pyzmq==26.2.1
