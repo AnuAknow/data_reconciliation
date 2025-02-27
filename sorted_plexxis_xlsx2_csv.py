@@ -51,6 +51,57 @@ def get_filename_input(prompt):
             
     raise ValueError("Maximum attempts exceeded. Valid input not provided.")
 
+def get_excel_range(prompt):
+    attempts = 0
+    max_attempts = 3
+
+    while attempts < max_attempts:
+        try:
+            input_range = input(prompt)
+            input_range = input_range.strip().replace(" ", "").split(",")
+            if len(input_range) != 4:
+                raise ValueError("You must enter exactly 4 numbers.")
+
+            first_range = tuple(map(int, input_range))
+            if all(isinstance(i, int) for i in first_range):
+                print(f"Valid range entered: {first_range}")
+                return first_range
+            else:
+                raise ValueError("All values must be integers.")
+        
+        except ValueError as e:
+            attempts += 1
+            print(f"Invalid input: {e}")
+            if attempts < max_attempts:
+                print(f"You have {max_attempts - attempts} attempts left.")
+            else:
+                print("No more attempts left. Please restart the program.")
+
+
+def get_sort_column_index(prompt):
+    attempts = 0
+    max_attempts = 3
+
+    while attempts < max_attempts:
+        try:
+            input_index = input(prompt)
+            input_index = input_index.strip()
+
+            if not input_index.isdigit():
+                raise ValueError("You must enter a single numeric value.")
+
+            sort_column_index = int(input_index)
+            print(f"Valid sort column index entered: {sort_column_index}")
+            return sort_column_index
+        
+        except ValueError as e:
+            attempts += 1
+            print(f"Invalid input: {e}")
+            if attempts < max_attempts:
+                print(f"You have {max_attempts - attempts} attempts left.")
+            else:
+                print("No more attempts left. Please restart the program.")
+                
 """
 The script reads the specified ranges from the Excel file, 
 combines them into a single DataFrame, sorts the DataFrame by the given column, 
@@ -90,14 +141,18 @@ def read_excel_ranges(file, first_range, second_range, sort_column, dir_path):
     
     # Change the current working directory
     try:
-        # Change directory
-        os.chdir(dir_path)
-        print(f"Directory changed to: {os.getcwd()}")
+        # Get the current working directory
+        directory_list = current_directory.split("\\")
+        if dir_path not in directory_list:
+            print(f"No {dir_path} is in directory_list")
+            os.chdir(dir_path)
+            print(f"Directory changed to: {os.getcwd()}")
+        else:
+            print(f"Yes {current_directory} is set")
         
         # Load the workbook and select the active worksheet
         workbook = openpyxl.load_workbook(file)
-        sheet = workbook.active
-        
+        sheet = workbook.active   
         # Set Pandas dataframe display options
         # Display all rows
         pd.set_option('display.max_rows', None)
@@ -170,10 +225,19 @@ def sort_csv(dir_path, input_csv_file, output_csv_file, sort_column_index, rever
     """
     # Get the current working directory
     current_directory = os.getcwd()
-    print(f"Current directory: {current_directory}")
     
     # Change the current working directory
     try:
+        
+        # Get the current working directory
+        directory_list = current_directory.split("\\")
+        if dir_path not in directory_list:
+            print(f"No {dir_path} is in directory_list")
+            os.chdir(dir_path)
+            print(f"Directory changed to: {os.getcwd()}")
+        else:
+            print(f"Yes {current_directory} is set")
+        
         with open(input_csv_file, 'r') as infile, open(output_csv_file, 'w', newline='') as outfile:
             reader = csv.reader(infile)
             header = next(reader)
@@ -203,15 +267,25 @@ def sort_csv(dir_path, input_csv_file, output_csv_file, sort_column_index, rever
 if __name__ == '__main__':
     
     file_path_input_prompt =  '''
-    Please enter the folder were the files\n
+    Please enter the folder were the files
     are stored relative to this script 
     (e.g. C:\\<script directory>\\data): 
     '''
     file_input_prompt = '''
-    Please enter a <Plexxis>.xlsx files.\n
-    Zenefit file name: "
+    Please enter a <Plexxis>.xlsx files.
+    Plexxis file name: 
     '''
-    
+    excel_table1_range_prompt = '''
+    Enter the range (start_row, start_col, end_row, end_col) for Table 1.
+    (e.g  7, 2, 44, 15):
+    '''
+    excel_table2_range_prompt = '''
+    Enter the range (start_row, start_col, end_row, end_col) for Table 2.
+    (e.g. 52, 2, 66, 15):
+    '''
+    sort_column_index_prompt = '''
+    Enter the sort column index (e.g., 2 for the third column): 
+    '''
     try:
         dir_path = get_filepath_input(file_path_input_prompt)
         print(f"You entered: {dir_path}")
@@ -224,24 +298,39 @@ if __name__ == '__main__':
     except ValueError as e:
         print(e)
         
-    # Args to convert Plexxis xlsx to csv 
-    first_range = (7, 2, 44, 16)  # (start_row, start_col, end_row, end_col)
-    second_range = (53, 2, 82, 16)  # (start_row, start_col, end_row, end_col)
-    sort_column_index = 2  # Sort by the third column (index 2)
-    
     try:
-        written_file = read_excel_ranges(file, first_range, second_range, sort_column_index, dir_path)
+       tbl_first_range = get_excel_range(excel_table1_range_prompt)
+       print(tbl_first_range)
     except ValueError as e:
         print(e)
-    print(f"CSV file {written_file} has been processed and written to {dir_path}!")
-    
-    # Args to sort Plexxis csv rows 
-    input_csv_file = written_file
-    output_csv_file = 'sorted_' + written_file
-    
+        
     try:
-        sorted_file = sort_csv(dir_path, input_csv_file, output_csv_file, sort_column_index)
-        print(f"CSV file {sorted_file} has been processed and written to {dir_path}!")
+         tbl_second_range = get_excel_range(excel_table2_range_prompt)
+         print(tbl_second_range)
+    except ValueError as e:
+        print(e)
+        
+    try:
+        sort_column_index = get_sort_column_index(sort_column_index_prompt)
+        print(sort_column_index)
+    except ValueError as e:
+        print(e)    
+        
+    try:
+        output_file = read_excel_ranges(file, tbl_first_range, tbl_second_range, sort_column_index, dir_path)
+        print(f"CSV file {output_file} has been processed and written to {dir_path}!")
     except ValueError as e:
         print(e)
     
+    '''
+    Sort CSV Args
+    '''
+    input_csv_file = output_file
+    output_csv_file = "sorted_" + output_file
+    
+    try:
+        
+        sorted_output_csv_file = sort_csv(dir_path, input_csv_file, output_csv_file, sort_column_index, reverse=False)
+        print(f"CSV file {sorted_output_csv_file} has been processed and written to {dir_path}!")
+    except ValueError as e:
+        print(e)

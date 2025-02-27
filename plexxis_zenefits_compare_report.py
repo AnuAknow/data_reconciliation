@@ -110,9 +110,15 @@ def create_diff_report(dir_path, csv_file1, csv_file2, output_file, timing_input
     
     # Change the current working directory
     try:
-        # Change directory
-        os.chdir(dir_path)
-        print(f"Directory changed to: {os.getcwd()}")
+        # Get the current working directory
+        directory_list = current_directory.split("\\")
+        if dir_path not in directory_list:
+            print(f"No {dir_path} is in directory_list")
+            os.chdir(dir_path)
+            print(f"Directory changed to: {os.getcwd()}")
+        else:
+            print(f"Yes {current_directory} is set")
+            
         
         with open(csv_file2, 'r') as file, open(output_file, 'w') as f:
             __csv_reader = csv.reader(file)

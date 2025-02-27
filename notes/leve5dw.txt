@@ -1,10 +1,34 @@
+Plexxis_T_PAYRUN_SUMMARY_US_Ck Date 110323.xls
+Zenefits_payroll_register_Ck Date 110323.xlsx
+Plexxis_T_PAYRUN_SUMMARY_US_Ck Date 110323
+Zenefits_payroll_register_Ck Date 110323
+
+
+
 Plexxis_Tax Details_Ck Date 121523
 Zenefits_payroll_detail_Ck Date 121523
+
+sorted_Plexxis_Tax_Details_Ck_Date_121523.csv
+Zenefits_payroll_detail_Ck_Date_121523.csv
+plexxis_zenefits_compare_121523.txt
 
     dir_path = 'data'
     csv_file1 = 'sorted_Plexxis_Tax_Details_Ck_Date_121523.csv'
     csv_file2 = 'Zenefits_payroll_detail_Ck_Date_121523.csv'
     output_file = 'Zenefits_Plexxis_Tax_merge.txt'
+
+How to run the Plexxis Zenefits xlsx to csv conversion utilities.
+1. create a new folder/directory (e.g. C:\level5dw). 
+2. create a new nested folder/directory for data files(e.g. C:\level5dw\data)
+3. Please, avoid spaces in the directory names.
+4. To avoid security issues copy Plexxis and Zenefits xlsx files in the 
+created data folder/directory(e.g. C:\level5dw\data\<plexxis>.xlsx).
+5. double click <plexxis>_xlsx2_csv.exe or <zenefits>_xlsx2_csv.exe executables and 
+follow onscreen directions.
+
+
+
+
 
 7-3
 6-2
