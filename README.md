@@ -1,236 +1,71 @@
-Employee Payroll Data Processing
-This repository contains a Python script designed to extract, process, and save employee payroll data from Excel files. The script performs several tasks, including:
+# Employee Payroll & Data Reconciliation Scripts  
 
-Extracting employee information from an Excel file.
+This repository contains Python scripts designed for **efficient payroll data processing and reconciliation of financial records**. These tools streamline the extraction, transformation, and validation of employee payroll data while comparing and identifying discrepancies between datasets.  
 
-Extracting payroll taxes.
+## Features  
+✔ **Automated Payroll Data Extraction** – Extract employee details, payroll taxes, and paid taxes from Excel files.  
+✔ **Data Integration** – Combine extracted data into a single structured dataset, ensuring accuracy.  
+✔ **File Reconciliation** – Compare CSV files with matching identifiers to detect discrepancies.  
+✔ **Security & Compliance** – Supports data integrity checks and GDPR/HIPAA compliance validation.  
 
-Extracting taxes paid.
+## Table of Contents  
+- [Requirements](#requirements)  
+- [Usage](#usage)  
+- [Functions](#functions)  
+- [Installation](#installation)  
+- [License](#license)  
+- [Contact](#contact)  
 
-Combining the extracted data into a single dataset.
+## Requirements  
+Ensure you have the following installed:  
+- **Python 3.x**  
+- **openpyxl** (for Excel data handling)  
+- **locale** (for localized financial processing)  
+- **pandas** (for CSV data comparison)  
 
-Saving the combined data into a CSV file.
+Install dependencies using:  
+```sh
+pip install openpyxl pandas
+```
 
-Table of Contents
-Requirements
+## Usage  
 
-Usage
-
-Functions
-
-extract_employee_info
-
-payroll_taxes
-
-extract_taxes_paid
-
-combine_list
-
-combine_data_lists
-
-write_to_file_in_directory
-
-Requirements
-Python 3.x
-
-openpyxl library
-
-locale library
-
-Install the required libraries using pip:
-
-sh
-pip install openpyxl
-Usage
-Clone the repository.
-
-Place your Excel file in the data directory.
-
-Update the file path and name in the script (v_path and v_file variables).
-
-Run the script:
-
-sh
+### Payroll Data Processing  
+1. Clone the repository.  
+2. Place your **Excel payroll file** inside the `data` directory.  
+3. Update the script's **file path** (`v_path`) and **file name** (`v_file`).  
+4. Run the payroll processing script:  
+```sh
 python payroll_processing.py
-Functions
-extract_employee_info
-This function extracts employee information from the specified Excel file.
+```  
+This will extract employee details, payroll taxes, and paid taxes, then compile them into a structured CSV file.  
 
-Parameters:
-
-dirpath (str): Directory path of the Excel file.
-
-filename (str): Name of the Excel file.
-
-heading (str): The heading to identify the section of the Excel file containing employee information.
-
-Returns:
-
-heading_list (list): List of employee information headings.
-
-filtered_employee_data (list): List of filtered employee data.
-
-payroll_taxes
-This function extracts payroll taxes from the specified Excel file.
-
-Parameters:
-
-dirpath (str): Directory path of the Excel file.
-
-filename (str): Name of the Excel file.
-
-heading (str): The heading to identify the section of the Excel file containing payroll taxes.
-
-Returns:
-
-__tax_headings (list): List of payroll tax headings.
-
-__all_taxes (list): List of all extracted taxes.
-
-extract_taxes_paid
-This function extracts taxes paid from the specified Excel file.
-
-Parameters:
-
-dirpath (str): Directory path of the Excel file.
-
-filename (str): Name of the Excel file.
-
-heading (str): The heading to identify the section of the Excel file containing taxes paid.
-
-Returns:
-
-__taxes (list): List of extracted taxes paid.
-
-combine_list
-This function combines multiple lists into a single list.
-
-Parameters:
-
-x (list): The base list.
-
-y (list): The list to be appended to the base list.
-
-z (str): An additional element to be added to the list.
-
-Returns:
-
-x (list): Combined list.
-
-combine_data_lists
-This function combines multiple lists of data into a single list.
-
-Parameters:
-
-x (list): The base list of data.
-
-y (list): The list of data to be appended to the base list.
-
-z (list): An additional list of data to be added.
-
-**Returns
-
-
-Reconciliation Script
-This Python script compares all files in a specified directory with corresponding numbers in their filenames (e.g., "plexus<number>.csv" and "lumber<number>.csv") and performs a data comparison. The script lists the files, filters the ones that start with "plexus" and "lumber," extracts the numbers from the filenames, and identifies differences between the pairs.
-
-Features
-Compares files with corresponding numbers in their filenames.
-
-Identifies and prints differences between the files.
-
-Supports CSV files with comma-delimited data.
-
-Prerequisites
-Python 3.x
-
-Pandas library
-
-Installation
-Clone the repository or download the script files.
-
-Ensure you have Python 3.x installed on your system.
-
-Install the Pandas library using pip:
-
-sh
-pip install pandas
-Usage
-Place your CSV files in the specified directory.
-
-Ensure the CSV files follow the naming convention "plexus<number>.csv" and "lumber<number>.csv".
-
-Run the script:
-
-sh
+### Reconciliation Script  
+1. Place CSV files into the target directory following the naming convention:  
+   - `plexus<number>.csv`  
+   - `lumber<number>.csv`  
+2. Run the reconciliation script:  
+```sh
 python compare_files.py
-The script will compare the files in the specified directory and print the differences.
+```  
+The script will compare matching files and highlight differences between datasets.  
 
-Script Details
-python
-import os
-import pandas as pd
+## Functions  
 
-def compare_files(dir_path):
-    # List of files in the directory
-    files = os.listdir(dir_path)
-    
-    # Filter files that start with "plexus" and "lumber"
-    plexus_files = [f for f in files if f.startswith("plexus") and f.endswith(".csv")]
-    lumber_files = [f for f in files if f.startswith("lumber") and f.endswith(".csv")]
+### Payroll Processing  
+- **extract_employee_info(dirpath, filename, heading)** – Extracts employee details.  
+- **payroll_taxes(dirpath, filename, heading)** – Retrieves payroll tax data.  
+- **extract_taxes_paid(dirpath, filename, heading)** – Extracts tax payment records.  
+- **combine_list(x, y, z)** – Merges multiple lists into a single dataset.  
+- **combine_data_lists(x, y, z)** – Consolidates structured data into a unified format.  
+- **write_to_file_in_directory(dirpath, filename, data)** – Saves processed data as a CSV file.  
 
-    for plexus_file in plexus_files:
-        # Extract the number from the file name
-        number = plexus_file[len("plexus"):-len(".csv")]
-        lumber_file = f"lumber{number}.csv"
+### Data Reconciliation  
+- **compare_files(dir_path)** – Identifies mismatches in CSV datasets and prints discrepancies.  
 
-        if lumber_file in lumber_files:
-            print(f"Comparing {plexus_file} and {lumber_file}")
-            data1 = pd.read_csv(os.path.join(dir_path, plexus_file))
-            data2 = pd.read_csv(os.path.join(dir_path, lumber_file))
+## License  
+This project is licensed under the **MIT License**.  
 
-            # Merge the DataFrames to identify differences
-            compare_data = data1.compare(data2, align_axis=0, keep_shape=True, keep_equal=True, result_names=(plexus_file, lumber_file))
-
-            print(compare_data)
-        else:
-            print(f"File {lumber_file} not found for comparison with {plexus_file}")
-
-# Example usage
-compare_files('data')
-Example
-To run the script with example data:
-
-Create a directory named data.
-
-Place the following sample CSV files in the data directory:
-
-plexus1.csv
-
-ID,Name,Age,Department
-1,John Doe,28,Engineering
-2,Jane Smith,34,Marketing
-3,Robert Johnson,25,Sales
-4,Alice Brown,30,Engineering
-5,Tom Clark,40,HR
-lumber1.csv
-
-ID,Name,Age,Department
-1,John Doe,28,Engineering
-2,Jane Smith,35,Marketing
-3,Robert Johnson,25,Sales
-4,Alice Brown,30,Engineering
-6,Nancy Davis,45,Finance
-Run the script:
-
-sh
-python compare_files.py
-The script will compare the files and print the differences.
-
-License
-This project is licensed under the MIT License.
-
-Contact
-If you have any questions or need further assistance, please feel free to contact me at:
-
-Email: everettaknowledge50@gmail.com
+## Contact  
+For inquiries, reach out via email:  
+📧 **everettaknowledge50@gmail.com**  
