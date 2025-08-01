@@ -1,7 +1,13 @@
-Plexxis_T_PAYRUN_SUMMARY_US_Ck Date 110323.xls
+Plexxis_T_PAYRUN_SUMMARY_US_Ck Date 110323.xlsx
 Zenefits_payroll_register_Ck Date 110323.xlsx
 Plexxis_T_PAYRUN_SUMMARY_US_Ck Date 110323
 Zenefits_payroll_register_Ck Date 110323
+Zenefits_payroll_register_Ck Date 110323.xlsx
+
+ # Args to convert Plexxis xlsx to csv 
+    first_range = (7, 2, 44, 15)  # (start_row, start_col, end_row, end_col)
+    second_range = (52, 2, 66, 15)  # (start_row, start_col, end_row, end_col)
+    sort_column_index = 2  # Sort by the third column (index 2)
 
 
 
